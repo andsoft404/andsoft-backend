@@ -11,10 +11,10 @@ var BACKEND = (function () {
 
   /* String → hex encode (WAF cannot decode this) */
   function toHex(s) {
-    var h = '', c;
-    for (var i = 0; i < s.length; i++) {
-      c = s.charCodeAt(i).toString(16);
-      h += (c.length < 2 ? '0' : '') + c;
+    var bytes = new TextEncoder().encode(s);
+    var h = '';
+    for (var i = 0; i < bytes.length; i++) {
+      h += ('0' + bytes[i].toString(16)).slice(-2);
     }
     return h;
   }

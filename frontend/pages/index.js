@@ -129,8 +129,8 @@ export default function Home({ siteData }) {
           date: new Date().toLocaleString('mn-MN')
         };
         var _msg = Object.assign({ a: 'messages.submit' }, msgData);
-        var _mHex = '', _mStr = JSON.stringify(_msg);
-        for (var _i = 0; _i < _mStr.length; _i++) { var _c = _mStr.charCodeAt(_i).toString(16); _mHex += (_c.length < 2 ? '0' : '') + _c; }
+        var _mBytes = new TextEncoder().encode(JSON.stringify(_msg));
+        var _mHex = ''; for (var _i = 0; _i < _mBytes.length; _i++) { _mHex += ('0' + _mBytes[_i].toString(16)).slice(-2); }
         var _mFd = new FormData(); _mFd.append('h', _mHex);
         fetch(API_URL + '/api', { method: 'POST', body: _mFd }).catch(function () { });
         form.reset();
@@ -249,8 +249,8 @@ export default function Home({ siteData }) {
           date: new Date().toLocaleString('mn-MN')
         };
         var _ord = Object.assign({ a: 'orders.submit' }, orderData);
-        var _oHex = '', _oStr = JSON.stringify(_ord);
-        for (var _j = 0; _j < _oStr.length; _j++) { var _d = _oStr.charCodeAt(_j).toString(16); _oHex += (_d.length < 2 ? '0' : '') + _d; }
+        var _oBytes = new TextEncoder().encode(JSON.stringify(_ord));
+        var _oHex = ''; for (var _j = 0; _j < _oBytes.length; _j++) { _oHex += ('0' + _oBytes[_j].toString(16)).slice(-2); }
         var _oFd = new FormData(); _oFd.append('h', _oHex);
         fetch(API_URL + '/api', { method: 'POST', body: _oFd }).catch(function () { });
         this.reset();

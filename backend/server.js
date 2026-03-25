@@ -57,9 +57,7 @@ function requireSuper(req, res) {
 
 // ======== Hex decode middleware (backward compat) ========
 function hexDecode(hex) {
-  let s = '';
-  for (let i = 0; i < hex.length; i += 2) s += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-  return s;
+  return Buffer.from(hex, 'hex').toString('utf8');
 }
 
 app.use('/api', upload.none(), (req, res, next) => {
@@ -425,7 +423,7 @@ async function saveCrud(req, res, table, data) {
       if (data[jsKey] !== undefined) {
         let val = data[jsKey];
         if (dbCol === 'features' && Array.isArray(val)) val = JSON.stringify(val);
-        if (dbCol === 'popular') val = val ? true : false;
+        if (dbCol === 'popular') val = val ? 1 : 0;
         sets.push(`${dbCol} = $${i}`);
         vals.push(val);
         i++;
@@ -442,7 +440,7 @@ async function saveCrud(req, res, table, data) {
     for (const [jsKey, dbCol] of Object.entries(tf.jsKeys)) {
       let val = data[jsKey] || '';
       if (dbCol === 'features' && Array.isArray(val)) val = JSON.stringify(val);
-      if (dbCol === 'popular') val = val ? true : false;
+      if (dbCol === 'popular') val = val ? 1 : 0;
       cols.push(dbCol);
       placeholders.push(`$${i}`);
       vals.push(val);
@@ -482,7 +480,7 @@ async function replaceAll(req, res, table, data) {
       for (const [jsKey, dbCol] of Object.entries(tf.jsKeys)) {
         let val = item[jsKey] || '';
         if (dbCol === 'features' && Array.isArray(val)) val = JSON.stringify(val);
-        if (dbCol === 'popular') val = val ? true : false;
+        if (dbCol === 'popular') val = val ? 1 : 0;
         cols.push(dbCol);
         placeholders.push(`$${i}`);
         vals.push(val);
