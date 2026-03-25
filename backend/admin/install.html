@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>АндСофт - Суулгалт</title>
+  <link rel="shortcut icon" href="images/Logo1.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f1117;
+      color: #e4e6f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: #1a1d27;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+    }
+    .container h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: hsl(25, 100%, 58%);
+    }
+    .container > p {
+      color: #8b8fa8;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: hsl(25, 100%, 58%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: hsl(30, 100%, 62%); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .result {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+    .result.success { background: rgba(52,211,153,0.15); color: #34d399; }
+    .result.error { background: rgba(248,113,113,0.15); color: #f87171; }
+    .result a { color: hsl(25, 100%, 58%); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>АндСофт - Өгөгдлийн сан суулгах</h1>
+    <p>Энэ хуудас нь PostgreSQL өгөгдлийн санд шаардлагатай хүснэгтүүдийг үүсгэж, анхны админ хэрэглэгч (admin / andsoft123) нэмнэ.</p>
+    <button class="btn" id="installBtn" onclick="doInstall()">Өгөгдлийн сан суулгах</button>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    function doInstall() {
+      var btn = document.getElementById('installBtn');
+      var result = document.getElementById('result');
+      btn.disabled = true;
+      btn.textContent = 'Суулгаж байна...';
+      result.className = 'result';
+      result.style.display = 'none';
+
+      var env = JSON.stringify({ a: 'install' });
+      var hex = '';
+      for (var i = 0; i < env.length; i++) {
+        var c = env.charCodeAt(i).toString(16);
+        hex += (c.length < 2 ? '0' : '') + c;
+      }
+      var fd = new FormData();
+      fd.append('h', hex);
+      fetch('/api', {
+        method: 'POST',
+        credentials: 'include',
+        body: fd
+      })
+        .then(function (res) {
+          var contentType = res.headers.get('content-type') || '';
+          if (!contentType.includes('json')) {
+            return res.text().then(function (txt) {
+              throw new Error('Сервер JSON буцаагаагүй: ' + (txt.substring(0, 300) || '(хоосон)'));
+            });
+          }
+          return res.json();
+        })
+        .then(function (data) {
+          if (data.data && data.data.success) {
+            result.className = 'result success';
+            result.innerHTML = '&#10004; ' + data.data.message + '<br>Одоо <a href="/admin/">Админ панел</a> руу орж болно.';
+          } else {
+            result.className = 'result error';
+            result.textContent = '&#10008; ' + (data.error || 'Алдаа гарлаа');
+          }
+          result.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Өгөгдлийн сан суулгах';
+        })
+        .catch(function (err) {
+          result.className = 'result error';
+          result.textContent = '&#10008; Сервертэй холбогдож чадсангүй: ' + err.message;
+          result.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Өгөгдлийн сан суулгах';
+        });
+    }
+  </script>
+</body>
+</html>

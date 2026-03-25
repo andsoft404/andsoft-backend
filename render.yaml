@@ -1,11 +1,41 @@
 services:
+  # Backend - Node.js API + Admin Panel (static)
   - type: web
     name: andsoft-backend
-    runtime: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: .
+    runtime: node
+    region: singapore
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: DATABASE_URL
-        value: "postgresql://andsoftdb_user:Z6xgC0cyC64vOAU2ek95W0fV3eRDVfIa@dpg-d71lqa4r85hc739qspi0-a/andsoftdb"
+        fromDatabase:
+          name: andsoftdb
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
       - key: CORS_ORIGIN
-        value: "*"
+        value: https://andsoft-frontend.onrender.com
+
+  # Frontend - Next.js
+  - type: web
+    name: andsoft-frontend
+    runtime: node
+    region: singapore
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://andsoft-backend.onrender.com
+      - key: NEXT_PUBLIC_MAPBOX_TOKEN
+        value: pk.eyJ1IjoiYmF0dWthIiwiYSI6ImNtbjUxd29pNTA2M28ycW9wcHc0aHptOW4ifQ.D5i4KH8jTwG5nrH34itJUA
+      - key: PORT
+        value: 3000
+
+databases:
+  - name: andsoftdb
+    region: singapore
+    plan: free

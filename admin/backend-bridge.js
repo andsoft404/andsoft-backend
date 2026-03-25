@@ -5,8 +5,8 @@
 var BACKEND = (function () {
   'use strict';
 
-  // Same server - relative path
-  var BASE = window.BACKEND_URL || '../backend/s.php';
+  // API base URL - use window.BACKEND_URL or relative /api
+  var BASE = window.BACKEND_URL || '/api';
   var enabled = true;
 
   /* String → hex encode (WAF cannot decode this) */

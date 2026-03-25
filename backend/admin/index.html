@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ | АндСофт</title>
+  <link rel="shortcut icon" href="images/Logo1.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260325">
+  <script>
+    // Configure image base URL for admin assets
+    window.IMAGE_BASE = 'images/';
+  </script>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <img src="images/Logo1.png" alt="АндСофт" class="login-logo">
+      <h1>Админ нэвтрэх</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Нэвтрэх нэр</label>
+          <input type="text" id="loginUser" placeholder="admin" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Нууц үг</label>
+          <input type="password" id="loginPass" placeholder="••••••" required autocomplete="current-password">
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button type="submit" class="btn-primary btn-full">Нэвтрэх</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel" style="display:none;">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <img src="images/Logo1.png" alt="" class="sidebar-logo">
+        <span class="sidebar-title">Админ</span>
+        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Хураах/Нээх">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-section="dashboard" data-tip="Хянах самбар">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Хянах самбар</span>
+        </button>
+        <div class="nav-divider">Контент</div>
+        <button class="nav-item" data-section="sidebar-edit" data-tip="Цэс">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          <span>Цэс</span>
+        </button>
+        <button class="nav-item" data-section="about" data-tip="Танилцуулга">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Танилцуулга</span>
+        </button>
+        <button class="nav-item" data-section="team" data-tip="Хамт олон">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>Хамт олон</span>
+        </button>
+        <button class="nav-item" data-section="partners" data-tip="Хамтрагч">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+          <span>Хамтрагч</span>
+        </button>
+        <button class="nav-item" data-section="pricing" data-tip="Үйлчилгээний үнэ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          <span>Үйлчилгээний үнэ</span>
+        </button>
+        <button class="nav-item" data-section="packages" data-tip="Багцууд">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          <span>Багцууд</span>
+        </button>
+        <button class="nav-item" data-section="advantages" data-tip="Давуу тал">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Давуу тал</span>
+        </button>
+        <button class="nav-item" data-section="projects" data-tip="Төслүүд">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          <span>Төслүүд</span>
+        </button>
+        <button class="nav-item" data-section="contact" data-tip="Холбоо барих">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Холбоо барих</span>
+        </button>
+        <div class="nav-divider">Хүсэлтүүд</div>
+        <button class="nav-item" data-section="messages" data-tip="Мессежүүд">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span>Мессежүүд</span>
+        </button>
+        <button class="nav-item" data-section="orders" data-tip="Захиалга">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span>Захиалга</span>
+        </button>
+        <div class="nav-divider">Систем</div>
+        <button class="nav-item" data-section="settings" data-tip="Тохиргоо">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Тохиргоо</span>
+        </button>
+        <button class="nav-item" data-section="users" data-tip="Эрх">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          <span>Эрх</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item logout-btn" id="logoutBtn" data-tip="Гарах">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Гарах</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <button class="menu-toggle" id="menuToggle">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h2 class="header-title" id="headerTitle">Хянах самбар</h2>
+        <div class="header-actions">
+          <a href="/" target="_blank" class="btn-outline btn-sm header-site-link" id="siteLink">Сайт үзэх</a>
+          <div class="notif-wrapper">
+            <button class="notif-btn" id="notifBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+            </button>
+            <div class="notif-dropdown" id="notifDropdown">
+              <div class="notif-tabs">
+                <button class="notif-tab active" data-ntab="alerts">Мэдэгдэл</button>
+                <button class="notif-tab" data-ntab="activity">Лог</button>
+              </div>
+              <div class="notif-list" id="notifAlerts"><div class="empty-state"><p>Мэдэгдэл байхгүй</p></div></div>
+              <div class="notif-list" id="notifActivity" style="display:none"><div class="empty-state"><p>Лог хоосон</p></div></div>
+            </div>
+          </div>
+          <div class="profile-wrapper">
+            <button class="profile-btn" id="profileBtn">
+              <img class="profile-avatar" id="profileAvatar" src="images/Logo1.png">
+              <span class="profile-name" id="profileName">Админ</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <button class="profile-dd-item" id="editProfileBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4-4v2"/><circle cx="12" cy="7" r="4"/></svg> Мэдээлэл засах</button>
+              <button class="profile-dd-item" id="headerLogoutBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Гарах</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section class="content-section active" data-content="dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon blue"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-info"><span class="stat-number" id="statTeam">0</span><span class="stat-label">Гишүүд</span></div></div>
+          <div class="stat-card"><div class="stat-icon green"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div><div class="stat-info"><span class="stat-number" id="statProjects">0</span><span class="stat-label">Төслүүд</span></div></div>
+          <div class="stat-card"><div class="stat-icon orange"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="stat-info"><span class="stat-number" id="statMessages">0</span><span class="stat-label">Мессеж</span></div></div>
+          <div class="stat-card"><div class="stat-icon purple"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div><div class="stat-info"><span class="stat-number" id="statOrders">0</span><span class="stat-label">Захиалга</span></div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="card"><div class="card-header"><h3>Контент тойм</h3></div><div class="card-body chart-body"><canvas id="chartContent"></canvas></div></div>
+          <div class="card"><div class="card-header"><h3>Төслийн ангилал</h3></div><div class="card-body chart-body"><canvas id="chartProjects"></canvas></div></div>
+        </div>
+        <div class="dash-recent-grid">
+          <div class="card"><div class="card-header"><h3>Сүүлийн мессежүүд</h3><button class="btn-outline btn-sm" onclick="document.querySelector('[data-section=messages]').click()">Бүгд →</button></div><div class="card-body" style="padding:0"><div class="dash-recent-list" id="dashRecentMessages"><div class="empty-state"><p>Мессеж байхгүй</p></div></div></div></div>
+          <div class="card"><div class="card-header"><h3>Сүүлийн захиалга</h3><button class="btn-outline btn-sm" onclick="document.querySelector('[data-section=orders]').click()">Бүгд →</button></div><div class="card-body" style="padding:0"><div class="dash-recent-list" id="dashRecentOrders"><div class="empty-state"><p>Захиалга байхгүй</p></div></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Шуурхай үйлдлүүд</h3></div>
+          <div class="dash-quick-grid">
+            <button class="dash-quick-btn" onclick="document.querySelector('[data-section=team]').click()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg>Хамт олон</button>
+            <button class="dash-quick-btn" onclick="document.querySelector('[data-section=projects]').click()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Төслүүд</button>
+            <button class="dash-quick-btn" onclick="document.querySelector('[data-section=pricing]').click()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Үнэ</button>
+            <button class="dash-quick-btn" onclick="document.querySelector('[data-section=packages]').click()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Багц</button>
+            <button class="dash-quick-btn" onclick="document.querySelector('[data-section=settings]').click()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Тохиргоо</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIDEBAR EDIT -->
+      <section class="content-section" data-content="sidebar-edit">
+        <div class="card">
+          <div class="card-header"><h3>Цэс (Sidebar)</h3></div>
+          <div class="card-body">
+            <form id="sidebarForm">
+              <div class="form-row">
+                <div class="form-group"><label>Лого файл</label><div class="input-with-upload"><input type="text" id="sidebarLogo" placeholder="AndSoft-Logo.png"><label class="upload-btn" title="Файл сонгох"><input type="file" accept="image/*" data-upload-for="sidebarLogo" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><img class="upload-preview" id="sidebarLogoPreview" style="display:none"><small>Файл сонгох эсвэл assets/images/ доторх нэр</small></div>
+                <div class="form-group"><label>Дэд гарчиг</label><input type="text" id="sidebarTitle"></div>
+              </div>
+              <div class="form-row"><div class="form-group"><label>Имэйл</label><input type="email" id="sidebarEmail"></div><div class="form-group"><label>Утас</label><input type="tel" id="sidebarPhone"></div></div>
+              <div class="form-group"><label>Хаяг</label><input type="text" id="sidebarLocation"></div>
+              <div class="form-row"><div class="form-group"><label>Facebook</label><input type="text" id="sidebarFacebook" placeholder="https://..."></div><div class="form-group"><label>Instagram</label><input type="text" id="sidebarInstagram" placeholder="https://..."></div></div>
+              <button type="submit" class="btn-primary">Хадгалах</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="content-section" data-content="about">
+        <div class="card">
+          <div class="card-header"><h3>Танилцуулга</h3></div>
+          <div class="card-body">
+            <form id="aboutForm">
+              <div class="form-group"><label>Тухай текст</label><textarea id="aboutText" rows="5"></textarea></div>
+              <div class="form-row"><div class="form-group"><label>Эрхэм зорилго</label><textarea id="aboutMission" rows="3"></textarea></div><div class="form-group"><label>Алсын хараа</label><textarea id="aboutVision" rows="3"></textarea></div></div>
+              <button type="submit" class="btn-primary">Хадгалах</button>
+            </form>
+          </div>
+        </div>
+        <div class="card mt-20">
+          <div class="card-header"><h3>Үйл ажиллагааны чиглэл</h3><button class="btn-primary btn-sm" id="addServiceBtn">+ Нэмэх</button></div>
+          <div class="card-body"><div class="table-wrap"><table class="data-table"><thead><tr><th>Icon</th><th>Гарчиг</th><th>Тайлбар</th><th>Үйлдэл</th></tr></thead><tbody id="servicesTableBody"></tbody></table></div></div>
+        </div>
+        <div class="modal-overlay" id="serviceModal"><div class="modal"><div class="modal-header"><h3 id="serviceModalTitle">Нэмэх</h3><button class="modal-close" data-close-modal="serviceModal">&times;</button></div><form id="serviceForm"><div class="modal-body"><div class="form-group"><label>Icon</label><div class="input-with-upload"><input type="text" id="serviceIcon" required placeholder="globe-outline"><label class="upload-btn" title="Зураг файл"><input type="file" accept="image/*,.svg" data-upload-for="serviceIcon" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><small>Ionicon нэр, SVG код, зургийн URL, эсвэл файл</small></div><div class="form-group"><label>Гарчиг</label><input type="text" id="serviceTitle" required></div><div class="form-group"><label>Тайлбар</label><textarea id="serviceDesc" rows="2"></textarea></div><input type="hidden" id="serviceEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="serviceModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- TEAM -->
+      <section class="content-section" data-content="team">
+        <div class="card">
+          <div class="card-header"><h3>Хамт олон</h3><button class="btn-primary btn-sm" id="addTeamBtn">+ Нэмэх</button></div>
+          <div class="card-body"><div class="table-wrap"><table class="data-table"><thead><tr><th>Зураг</th><th>Албан тушаал</th><th>Тайлбар</th><th>Үйлдэл</th></tr></thead><tbody id="teamTableBody"></tbody></table></div></div>
+        </div>
+        <div class="modal-overlay" id="teamModal"><div class="modal"><div class="modal-header"><h3 id="teamModalTitle">Нэмэх</h3><button class="modal-close" data-close-modal="teamModal">&times;</button></div><form id="teamForm"><div class="modal-body"><div class="form-group"><label>Албан тушаал</label><input type="text" id="teamRole" required></div><div class="form-group"><label>Тайлбар</label><textarea id="teamDesc" rows="3"></textarea></div><div class="form-group"><label>Зураг</label><div class="input-with-upload"><input type="text" id="teamImage" placeholder="avatar-1.png"><label class="upload-btn" title="Файл сонгох"><input type="file" accept="image/*" data-upload-for="teamImage" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><img class="upload-preview" id="teamImagePreview" style="display:none"><small>Файл сонгох эсвэл assets/images/ доторх нэр</small></div><input type="hidden" id="teamEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="teamModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- PARTNERS -->
+      <section class="content-section" data-content="partners">
+        <div class="card">
+          <div class="card-header"><h3>Хамтрагч</h3><button class="btn-primary btn-sm" id="addPartnerBtn">+ Нэмэх</button></div>
+          <div class="card-body"><div class="partners-grid" id="partnersGrid"></div></div>
+        </div>
+        <div class="modal-overlay" id="partnerModal"><div class="modal"><div class="modal-header"><h3 id="partnerModalTitle">Нэмэх</h3><button class="modal-close" data-close-modal="partnerModal">&times;</button></div><form id="partnerForm"><div class="modal-body"><div class="form-group"><label>Нэр</label><input type="text" id="partnerName" required></div><div class="form-group"><label>Лого</label><div class="input-with-upload"><input type="text" id="partnerLogo" required placeholder="logo.png"><label class="upload-btn" title="Файл сонгох"><input type="file" accept="image/*,.svg" data-upload-for="partnerLogo" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><img class="upload-preview" id="partnerLogoPreview" style="display:none"><small>Файл сонгох эсвэл assets/images/ доторх нэр</small></div><div class="form-group"><label>Вебсайт</label><input type="url" id="partnerUrl" placeholder="https://..."></div><input type="hidden" id="partnerEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="partnerModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- PRICING -->
+      <section class="content-section" data-content="pricing">
+        <div class="card">
+          <div class="card-header"><h3>Үйлчилгээний үнэ</h3><button class="btn-primary btn-sm" id="addPricingCatBtn">+ Ангилал</button></div>
+          <div class="card-body" id="pricingContainer"></div>
+        </div>
+        <div class="modal-overlay" id="pricingCatModal"><div class="modal"><div class="modal-header"><h3 id="pricingCatModalTitle">Ангилал</h3><button class="modal-close" data-close-modal="pricingCatModal">&times;</button></div><form id="pricingCatForm"><div class="modal-body"><div class="form-group"><label>Нэр</label><input type="text" id="pricingCatName" required placeholder="Вебсайт хийх үнэ"></div><div class="form-group"><label>Icon</label><div class="input-with-upload"><input type="text" id="pricingCatIcon" required placeholder="globe-outline"><label class="upload-btn" title="Зураг файл"><input type="file" accept="image/*,.svg" data-upload-for="pricingCatIcon" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><small>Ionicon нэр, SVG код, зургийн URL, эсвэл файл</small></div><input type="hidden" id="pricingCatEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="pricingCatModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+        <div class="modal-overlay" id="pricingItemModal"><div class="modal"><div class="modal-header"><h3 id="pricingItemModalTitle">Үнэ</h3><button class="modal-close" data-close-modal="pricingItemModal">&times;</button></div><form id="pricingItemForm"><div class="modal-body"><div class="form-group"><label>Icon</label><div class="input-with-upload"><input type="text" id="pricingItemIcon" required placeholder="newspaper-outline"><label class="upload-btn" title="Зураг файл"><input type="file" accept="image/*,.svg" data-upload-for="pricingItemIcon" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><small>Ionicon нэр, SVG код, зургийн URL, эсвэл файл</small></div><div class="form-group"><label>Гарчиг</label><input type="text" id="pricingItemTitle" required></div><div class="form-group"><label>Үнэ</label><input type="text" id="pricingItemPrice" required placeholder="200,000 – 500,000₮"></div><div class="form-group"><label>Тайлбар</label><textarea id="pricingItemDesc" rows="2"></textarea></div><div class="form-group"><label class="checkbox-label"><input type="checkbox" id="pricingItemPopular"> Түгээмэл badge</label></div><input type="hidden" id="pricingItemCatIndex" value="-1"><input type="hidden" id="pricingItemEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="pricingItemModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- PACKAGES -->
+      <section class="content-section" data-content="packages">
+        <div class="card">
+          <div class="card-header"><h3>Багцууд</h3><button class="btn-primary btn-sm" id="addPackageBtn">+ Нэмэх</button></div>
+          <div class="card-body"><div class="packages-grid" id="packagesGrid"></div></div>
+        </div>
+        <div class="modal-overlay" id="packageModal"><div class="modal"><div class="modal-header"><h3 id="packageModalTitle">Багц</h3><button class="modal-close" data-close-modal="packageModal">&times;</button></div><form id="packageForm"><div class="modal-body"><div class="form-row"><div class="form-group"><label>Нэр</label><input type="text" id="packageName" required></div><div class="form-group"><label>Icon</label><div class="input-with-upload"><input type="text" id="packageIcon" placeholder="leaf-outline"><label class="upload-btn" title="Зураг файл"><input type="file" accept="image/*,.svg" data-upload-for="packageIcon" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div></div></div><div class="form-group"><label>Үнэ</label><input type="text" id="packagePrice" required placeholder="1,500,000₮"></div><div class="form-group"><label>Онцлогууд (мөр бүр)</label><textarea id="packageFeatures" rows="4" placeholder="Танилцуулга сайт&#10;Админ эрх"></textarea></div><div class="form-group"><label class="checkbox-label"><input type="checkbox" id="packagePopular"> Түгээмэл</label></div><input type="hidden" id="packageEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="packageModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- ADVANTAGES -->
+      <section class="content-section" data-content="advantages">
+        <div class="card">
+          <div class="card-header"><h3>Давуу тал</h3><button class="btn-primary btn-sm" id="addAdvSectionBtn">+ Хэсэг</button></div>
+          <div class="card-body" id="advantagesContainer"></div>
+        </div>
+        <div class="modal-overlay" id="advSectionModal"><div class="modal"><div class="modal-header"><h3 id="advSectionModalTitle">Хэсэг</h3><button class="modal-close" data-close-modal="advSectionModal">&times;</button></div><form id="advSectionForm"><div class="modal-body"><div class="form-row"><div class="form-group" style="flex:0.3"><label>№</label><input type="text" id="advSectionNumber" required placeholder="01"></div><div class="form-group"><label>Гарчиг</label><input type="text" id="advSectionTitle" required></div></div><input type="hidden" id="advSectionEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="advSectionModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+        <div class="modal-overlay" id="advItemModal"><div class="modal"><div class="modal-header"><h3 id="advItemModalTitle">Нэмэх</h3><button class="modal-close" data-close-modal="advItemModal">&times;</button></div><form id="advItemForm"><div class="modal-body"><div class="form-group"><label>Icon</label><div class="input-with-upload"><input type="text" id="advItemIcon" required placeholder="flash-outline"><label class="upload-btn" title="Зураг файл"><input type="file" accept="image/*,.svg" data-upload-for="advItemIcon" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><small>Ionicon нэр, SVG код, зургийн URL, эсвэл файл</small></div><div class="form-group"><label>Гарчиг</label><input type="text" id="advItemTitle" required></div><div class="form-group"><label>Тайлбар</label><textarea id="advItemDesc" rows="2"></textarea></div><input type="hidden" id="advItemSecIndex" value="-1"><input type="hidden" id="advItemEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="advItemModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="content-section" data-content="projects">
+        <div class="card">
+          <div class="card-header"><h3>Төслүүд</h3><button class="btn-primary btn-sm" id="addProjectBtn">+ Нэмэх</button></div>
+          <div class="card-body"><div class="projects-admin-grid" id="projectsGrid"></div></div>
+        </div>
+        <div class="modal-overlay" id="projectModal"><div class="modal modal-lg"><div class="modal-header"><h3 id="projectModalTitle">Төсөл</h3><button class="modal-close" data-close-modal="projectModal">&times;</button></div><form id="projectForm"><div class="modal-body"><div class="form-row"><div class="form-group"><label>Нэр</label><input type="text" id="projectName" required></div><div class="form-group"><label>Төрөл</label><select id="projectCategory"><option value="project">Хийсэн төсөл</option><option value="template">Бэлэн загвар</option></select></div></div><div class="form-group"><label>Богино тайлбар</label><input type="text" id="projectShortDesc"></div><div class="form-group"><label>Дэлгэрэнгүй</label><textarea id="projectDesc" rows="3"></textarea></div><div class="form-row"><div class="form-group"><label>Зураг</label><div class="input-with-upload"><input type="text" id="projectImage" placeholder="project-1.png"><label class="upload-btn" title="Файл сонгох"><input type="file" accept="image/*" data-upload-for="projectImage" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></label></div><img class="upload-preview" id="projectImagePreview" style="display:none"></div><div class="form-group"><label>Үнэ</label><input type="text" id="projectPrice" placeholder="200,000 – 500,000₮"></div></div><div class="form-group"><label>Тагууд (таслалаар)</label><input type="text" id="projectTags" placeholder="Веб, Систем"></div><input type="hidden" id="projectEditIndex" value="-1"></div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="projectModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="content-section" data-content="contact">
+        <div class="card">
+          <div class="card-header"><h3>Холбоо барих</h3></div>
+          <div class="card-body">
+            <form id="contactForm">
+              <div class="form-row"><div class="form-group"><label>Имэйл</label><input type="email" id="contactEmail"></div><div class="form-group"><label>Утас</label><input type="tel" id="contactPhone"></div></div>
+              <h4 class="form-section-title">Газрын зураг</h4>
+              <div class="form-row"><div class="form-group"><label>Latitude</label><input type="text" id="contactLat"></div><div class="form-group"><label>Longitude</label><input type="text" id="contactLng"></div><div class="form-group"><label>Zoom</label><input type="number" id="contactZoom"></div></div>
+              <div class="form-row"><div class="form-group"><label>Popup гарчиг</label><input type="text" id="contactPopupTitle"></div><div class="form-group"><label>Popup хаяг</label><input type="text" id="contactPopupAddress"></div></div>
+              <button type="submit" class="btn-primary">Хадгалах</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section class="content-section" data-content="messages">
+        <div class="card">
+          <div class="card-header"><h3>Мессежүүд</h3><button class="btn-outline btn-sm" id="clearMessagesBtn">Бүгдийг устгах</button></div>
+          <div class="card-body" id="messagesContainer"><div class="empty-state"><p>Мессеж ирээгүй</p></div></div>
+        </div>
+      </section>
+
+      <!-- ORDERS -->
+      <section class="content-section" data-content="orders">
+        <div class="card">
+          <div class="card-header"><h3>Захиалгууд</h3><button class="btn-outline btn-sm" id="clearOrdersBtn">Бүгдийг устгах</button></div>
+          <div class="card-body" id="ordersContainer"><div class="empty-state"><p>Захиалга ирээгүй</p></div></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="content-section" data-content="settings">
+        <div class="card">
+          <div class="card-header"><h3>Ерөнхий тохиргоо</h3></div>
+          <div class="card-body">
+            <div class="setting-row">
+              <div class="setting-info"><span class="setting-label">Мэдэгдлийн дуу</span><span class="setting-desc">Шинэ мессеж, захиалга ирэхэд дуугарах</span></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingSoundToggle" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><span class="setting-label">Автомат шинэчлэлт</span><span class="setting-desc">Мессеж, захиалга 5 секунд тутам шалгах</span></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingAutoRefresh" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><span class="setting-label">Sidebar автомат эвхэх</span><span class="setting-desc">Нэвтрэхэд sidebar эвхэгдсэн байдлаар ачаалах</span></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingSidebarCollapsed"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-20">
+          <div class="card-header"><h3>Дата менежмент</h3></div>
+          <div class="card-body">
+            <div class="btn-group">
+              <button class="btn-outline" id="exportDataBtn">Экспорт (JSON)</button>
+              <label class="btn-outline" style="cursor:pointer;">Импорт<input type="file" id="importDataInput" accept=".json" style="display:none;"></label>
+              <button class="btn-danger" id="resetDataBtn">Бүх дата устгах</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- USERS / PERMISSIONS -->
+      <section class="content-section" data-content="users">
+        <div class="card">
+          <div class="card-header"><h3>Хэрэглэгчийн эрх</h3><button class="btn-primary btn-sm" id="addUserBtn">+ Хэрэглэгч нэмэх</button></div>
+          <div class="card-body">
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Нэр</th><th>Нэвтрэх нэр</th><th>Эрх</th><th>Төлөв</th><th>Үйлдэл</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+          </div>
+        </div>
+        <div class="modal-overlay" id="userModal"><div class="modal"><div class="modal-header"><h3 id="userModalTitle">Хэрэглэгч нэмэх</h3><button class="modal-close" data-close-modal="userModal">&times;</button></div><form id="userForm"><div class="modal-body">
+          <div class="form-group"><label>Нэр</label><input type="text" id="userName" required placeholder="Батбаяр"></div>
+          <div class="form-group"><label>Нэвтрэх нэр</label><input type="text" id="userLogin" required placeholder="batbayar" autocomplete="off"></div>
+          <div class="form-group"><label>Нууц үг</label><input type="password" id="userPass" placeholder="Засахад хоосон бол хэвээрээ" autocomplete="new-password"></div>
+          <div class="form-group"><label>Эрх</label><select id="userRole"><option value="super">Супер админ</option><option value="view">Үзэх эрх</option></select></div>
+          <input type="hidden" id="userEditIndex" value="-1">
+        </div><div class="modal-footer"><button type="button" class="btn-outline" data-close-modal="userModal">Болих</button><button type="submit" class="btn-primary">Хадгалах</button></div></form></div></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Profile Edit Modal -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Профайл засах</h3><button class="modal-close" data-close-modal="profileModal">&times;</button></div>
+      <form id="profileForm">
+        <div class="modal-body">
+          <div class="form-group" style="text-align:center;">
+            <img id="profileEditAvatar" class="profile-edit-avatar" src="images/Logo1.png">
+            <br>
+            <label class="btn-outline btn-sm" style="margin-top:10px;cursor:pointer;">Зураг солих<input type="file" id="profileAvatarInput" accept="image/*" hidden></label>
+          </div>
+          <div class="form-group"><label>Нэр</label><input type="text" id="profileEditName"></div>
+          <div class="form-group"><label>Нэвтрэх нэр</label><input type="text" id="profileEditUser"></div>
+          <div class="form-group"><label>Шинэ нууц үг</label><input type="password" id="profileEditPass" placeholder="Хоосон бол хэвээрээ"></div>
+          <div class="form-group"><label>Эрх</label><div id="profileRoleDisplay" style="padding:8px 0;"></div></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" data-close-modal="profileModal">Болих</button>
+          <button type="submit" class="btn-primary">Хадгалах</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="backend-bridge.js?v=20260326h"></script>
+  <script src="admin.js?v=20260326h"></script>
+</body>
+</html>
