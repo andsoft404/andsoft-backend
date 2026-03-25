@@ -1,0 +1,21 @@
+# АндСофт Backend - PHP
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /backend/
+
+    # Block direct access to internal files
+    RewriteRule ^config\.php$ - [F,L]
+    RewriteRule ^db\.php$ - [F,L]
+    RewriteRule ^helpers\.php$ - [F,L]
+    RewriteRule ^api/ - [F,L]
+</IfModule>
+
+# PHP Settings for InfinityFree (may not be supported on all hosts)
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 30
+</IfModule>

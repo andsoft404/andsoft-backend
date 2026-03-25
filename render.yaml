@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: andsoft-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        value: "postgresql://andsoftdb_user:Z6xgC0cyC64vOAU2ek95W0fV3eRDVfIa@dpg-d71lqa4r85hc739qspi0-a/andsoftdb"
+      - key: CORS_ORIGIN
+        value: "*"
