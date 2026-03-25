@@ -394,6 +394,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
 /* TOAST */
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--card-bg); border: 1px solid var(--accent); color: var(--text-primary); padding: 12px 20px; border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; z-index: 999; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { background: #dc2626; border-color: #dc2626; color: #fff; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {

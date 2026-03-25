@@ -23,11 +23,13 @@
   function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
   function $(id) { return document.getElementById(id); }
 
-  function toast(msg) {
+  function toast(msg, type) {
     var t = $('toast');
     t.textContent = msg;
+    t.classList.remove('error');
+    if (type === 'error') t.classList.add('error');
     t.classList.add('show');
-    setTimeout(function() { t.classList.remove('show'); }, 2500);
+    setTimeout(function() { t.classList.remove('show', 'error'); }, type === 'error' ? 5000 : 2500);
   }
 
   // ======== API HELPER ========
@@ -79,23 +81,29 @@
   // ======== SAVE HELPERS ========
   function saveContent(type, data) {
     DB[type] = data;
+    console.log('[SAVE] saveContent', type, JSON.stringify(data).substring(0,200));
     return api(type + '.save', data).then(function(r) {
+      console.log('[SAVE] saveContent response', type, r);
       if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
-    }).catch(function(e) { console.warn('Save ' + type + ':', e.message); toast('Алдаа: ' + e.message, 'error'); });
+    }).catch(function(e) { console.error('[SAVE] saveContent FAIL', type, e); toast('Алдаа: ' + e.message, 'error'); });
   }
 
   function saveArray(type, data) {
     DB[type] = data;
+    console.log('[SAVE] saveArray', type, 'items:', data.length, JSON.stringify(data).substring(0,300));
     return api(type + '.replaceAll', { items: data }).then(function(r) {
+      console.log('[SAVE] saveArray response', type, r);
       if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
-    }).catch(function(e) { console.warn('Save ' + type + ':', e.message); toast('Алдаа: ' + e.message, 'error'); });
+    }).catch(function(e) { console.error('[SAVE] saveArray FAIL', type, e); toast('Алдаа: ' + e.message, 'error'); });
   }
 
   function savePricing(data) {
     DB.pricing = data;
+    console.log('[SAVE] savePricing', 'categories:', data.length, JSON.stringify(data).substring(0,300));
     return api('pricing.replaceAll', { categories: data }).then(function(r) {
+      console.log('[SAVE] savePricing response', r);
       if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
-    }).catch(function(e) { console.warn('Save pricing:', e.message); toast('Алдаа: ' + e.message, 'error'); });
+    }).catch(function(e) { console.error('[SAVE] savePricing FAIL', e); toast('Алдаа: ' + e.message, 'error'); });
   }
 
   function saveAdvantages(data) {
