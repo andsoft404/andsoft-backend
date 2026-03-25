@@ -611,20 +611,42 @@ export default function Home({ siteData }) {
               </div>
             </section>
 
-            {/* Хамт олон */}
+            {/* Хамт олон — Puzzle */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <ul className="testimonials-list has-scrollbar">
-                {team.map((m, i) => (
-                  <li key={i} className="testimonials-item">
-                    <div className="content-card" data-testimonials-item>
-                      <figure className="testimonials-avatar-box"><img src={m.image || '/images/avatar-1.png'} alt={m.role} width="60" data-testimonials-avatar /></figure>
-                      <h4 className="h4 testimonials-item-title" data-testimonials-title>{m.role}</h4>
-                      <div className="testimonials-text" data-testimonials-text><p>{m.desc}</p></div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="puzzle-grid" style={{'--puzzle-cols': Math.min(team.length, 4) || 1}}>
+                {(() => {
+                  const cols = Math.min(team.length, 4) || 1;
+                  const rows = Math.ceil(team.length / cols);
+                  const P = 8, B = 92, Ct = 50, Hw = 11, N = 12;
+                  return team.map((mbr, i) => {
+                    const r = Math.floor(i / cols), c = i % cols;
+                    const hasR = c < cols - 1 && i + 1 < team.length;
+                    const hasB = i + cols < team.length;
+                    const et = r === 0 ? 0 : r % 2 === 1 ? -1 : 1;
+                    const er = !hasR ? 0 : c % 2 === 0 ? 1 : -1;
+                    const eb = !hasB ? 0 : r % 2 === 0 ? 1 : -1;
+                    const el = c === 0 ? 0 : c % 2 === 1 ? -1 : 1;
+                    const pts = [];
+                    const a = (x, y) => pts.push(x.toFixed(1) + '% ' + y.toFixed(1) + '%');
+                    a(P, P);
+                    if (et) for (let j = 0; j <= N; j++) { const g = Math.PI - j * Math.PI / N; a(Ct + Hw * Math.cos(g), P - et * P * Math.sin(g)); }
+                    a(B, P);
+                    if (er) for (let j = 0; j <= N; j++) { const g = Math.PI / 2 - j * Math.PI / N; a(B + er * P * Math.cos(g), Ct - Hw * Math.sin(g)); }
+                    a(B, B);
+                    if (eb) for (let j = 0; j <= N; j++) { const g = j * Math.PI / N; a(Ct + Hw * Math.cos(g), B + eb * P * Math.sin(g)); }
+                    a(P, B);
+                    if (el) for (let j = 0; j <= N; j++) { const g = Math.PI / 2 - j * Math.PI / N; a(P - el * P * Math.cos(g), Ct + Hw * Math.sin(g)); }
+                    return (
+                      <div key={i} className="puzzle-piece" style={{ clipPath: 'polygon(' + pts.join(',') + ')' }} data-testimonials-item>
+                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} data-testimonials-avatar />
+                        <div className="puzzle-info"><span data-testimonials-title>{mbr.role}</span></div>
+                        <p className="puzzle-hidden-desc" data-testimonials-text>{mbr.desc}</p>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </section>
 
             {/* Хамтрагч байгууллагууд */}
