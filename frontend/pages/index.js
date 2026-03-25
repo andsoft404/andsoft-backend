@@ -501,7 +501,7 @@ export default function Home({ siteData }) {
           <div className="sidebar-info">
             <figure className="avatar-box">
               <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт Глобал Партнэр" width="120" className="logo-dark" />
-              <img src="/images/AndSoft-Logo-Light.png" alt="АндСофт Глобал Партнэр" width="120" className="logo-light" />
+              <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт Глобал Партнэр" width="120" className="logo-light" />
             </figure>
             <div className="info-content">
               <p className="title">{sb.subtitle || 'IT Компани'}</p>

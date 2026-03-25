@@ -246,21 +246,32 @@
   var lastOrdCount = 0;
 
   function checkForNew() {
-    api('messages.list').then(function(r) {
-      if (r.data) {
-        var oldLen = DB.messages.length;
-        DB.messages = r.data;
-        if (r.data.length > oldLen && oldLen > 0) { playNotifSound(); renderMessages(); renderStats(); renderDashRecent(); }
-      }
-    }).catch(function(){});
-    api('orders.list').then(function(r) {
-      if (r.data) {
-        var oldLen = DB.orders.length;
-        DB.orders = r.data;
-        if (r.data.length > oldLen && oldLen > 0) { playNotifSound(); renderOrders(); renderStats(); renderDashRecent(); }
-      }
-    }).catch(function(){});
-    renderNotifs();
+    api('notifs.list').then(function(r) { if (r.data) { DB.notifs = r.data; renderNotifs(); } }).catch(function(){});
+  }
+
+  // ======== SSE REAL-TIME ========
+  function initSSE() {
+    var base = window.BACKEND_URL || '';
+    var es = new EventSource(base + '/api/sse');
+    es.onmessage = function(e) {
+      try {
+        var msg = JSON.parse(e.data);
+        if (msg.type === 'message') {
+          DB.messages.unshift(msg.data);
+          DB.notifs.unshift({ type: 'message', text: (msg.data.name || '') + ' мессеж илгээлээ', read: false, time: msg.data.date });
+          playNotifSound(); renderMessages(); renderNotifs(); renderStats(); renderDashRecent();
+        } else if (msg.type === 'order') {
+          DB.orders.unshift(msg.data);
+          DB.notifs.unshift({ type: 'order', text: (msg.data.name || '') + ' захиалга өглөө', read: false, time: msg.data.date });
+          playNotifSound(); renderOrders(); renderNotifs(); renderStats(); renderDashRecent();
+        }
+      } catch(err) { console.warn('SSE parse:', err); }
+    };
+    es.onerror = function() {
+      es.close();
+      // Fallback to polling if SSE fails
+      setTimeout(initSSE, 15000);
+    };
   }
 
   function renderNotifs() {
@@ -469,6 +480,7 @@
   function loadSidebarForm() {
     var s = DB.sidebar.logo ? DB.sidebar : defSidebar;
     $('sidebarLogo').value = s.logo || '';
+    $('sidebarLogoLight').value = s.logoLight || '';
     $('sidebarTitle').value = s.subtitle || '';
     $('sidebarEmail').value = s.email || '';
     $('sidebarPhone').value = s.phone || '';
@@ -476,6 +488,7 @@
     $('sidebarFacebook').value = s.facebook || '';
     $('sidebarInstagram').value = s.instagram || '';
     showPreview('sidebarLogo');
+    showPreview('sidebarLogoLight');
   }
 
   function loadAboutForm() {
@@ -715,7 +728,8 @@
     lastMsgCount = DB.messages.length;
     lastOrdCount = DB.orders.length;
 
-    setInterval(function () { if (DB.settings.autoRefresh !== false) checkForNew(); }, 10000);
+    setInterval(function () { if (DB.settings.autoRefresh !== false) checkForNew(); }, 30000);
+    initSSE();
 
     var navItems = document.querySelectorAll('.nav-item[data-section]');
     var sections = document.querySelectorAll('.content-section');
@@ -816,7 +830,7 @@
     $('sidebarForm').addEventListener('submit', function (e) {
       e.preventDefault();
       if (!isSuperAdmin()) { toast('Эрх хүрэлцэхгүй'); return; }
-      var data = { logo: $('sidebarLogo').value, subtitle: $('sidebarTitle').value, email: $('sidebarEmail').value, phone: $('sidebarPhone').value, address: $('sidebarLocation').value, facebook: $('sidebarFacebook').value, instagram: $('sidebarInstagram').value };
+      var data = { logo: $('sidebarLogo').value, logoLight: $('sidebarLogoLight').value, subtitle: $('sidebarTitle').value, email: $('sidebarEmail').value, phone: $('sidebarPhone').value, address: $('sidebarLocation').value, facebook: $('sidebarFacebook').value, instagram: $('sidebarInstagram').value };
       saveContent('sidebar', data);
       logActivity('edit', 'Цэс', 'Sidebar');
       toast('Цэс хадгалагдлаа');

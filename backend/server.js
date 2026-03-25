@@ -55,6 +55,28 @@ function requireSuper(req, res) {
   return true;
 }
 
+// ======== SSE for real-time notifications ========
+const sseClients = new Set();
+
+app.get('/api/sse', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+    'Access-Control-Allow-Origin': CORS_ORIGIN === '*' ? '*' : CORS_ORIGIN
+  });
+  res.write('data: {"type":"connected"}\n\n');
+  sseClients.add(res);
+  req.on('close', () => sseClients.delete(res));
+});
+
+function broadcastSSE(payload) {
+  const data = 'data: ' + JSON.stringify(payload) + '\n\n';
+  for (const client of sseClients) {
+    try { client.write(data); } catch (e) { sseClients.delete(client); }
+  }
+}
+
 // ======== Hex decode middleware (backward compat) ========
 function hexDecode(hex) {
   return Buffer.from(hex, 'hex').toString('utf8');
@@ -337,7 +359,7 @@ async function saveSettings(req, res, data) {
 
 // ======== CONTENT (sidebar, about, contact) ========
 const contentCols = {
-  sidebar: { logo: 'logo', subtitle: 'subtitle', email: 'email', phone: 'phone', address: 'address', facebook: 'facebook', instagram: 'instagram' },
+  sidebar: { logo: 'logo', logoLight: 'logo_light', subtitle: 'subtitle', email: 'email', phone: 'phone', address: 'address', facebook: 'facebook', instagram: 'instagram' },
   about: { text: '"text"', mission: 'mission', vision: 'vision' },
   contact: { email: 'email', phone: 'phone', lat: 'lat', lng: 'lng', zoom: 'zoom', popupTitle: 'popup_title', popupAddress: 'popup_address' }
 };
@@ -693,8 +715,9 @@ async function deleteMessages(req, res) {
 async function submitMessage(req, res, data) {
   const { name, email, phone, message, service } = data;
   if (!name || !message) return jsonErr(res, 'Нэр, мессеж оруулна уу');
-  await pool.query('INSERT INTO messages (name, email, phone, message, service) VALUES ($1,$2,$3,$4,$5)', [name || '', email || '', phone || '', message, service || '']);
+  const r = await pool.query('INSERT INTO messages (name, email, phone, message, service) VALUES ($1,$2,$3,$4,$5) RETURNING id, created_at', [name || '', email || '', phone || '', message, service || '']);
   await pool.query('INSERT INTO notifications (type, text) VALUES ($1,$2)', ['message', name + ' мессеж илгээлээ']);
+  broadcastSSE({ type: 'message', data: { id: r.rows[0].id, name, email: email||'', phone: phone||'', message, service: service||'', date: r.rows[0].created_at } });
   jsonRes(res, { success: true });
 }
 
@@ -714,8 +737,9 @@ async function deleteOrders(req, res) {
 async function submitOrder(req, res, data) {
   const { name, email, phone, project, message, service } = data;
   if (!name) return jsonErr(res, 'Нэр оруулна уу');
-  await pool.query('INSERT INTO orders (name, email, phone, project, message, service) VALUES ($1,$2,$3,$4,$5,$6)', [name, email || '', phone || '', project || '', message || '', service || '']);
+  const r = await pool.query('INSERT INTO orders (name, email, phone, project, message, service) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, created_at', [name, email || '', phone || '', project || '', message || '', service || '']);
   await pool.query('INSERT INTO notifications (type, text) VALUES ($1,$2)', ['order', name + ' захиалга өглөө']);
+  broadcastSSE({ type: 'order', data: { id: r.rows[0].id, name, email: email||'', phone: phone||'', project: project||'', message: message||'', service: service||'', date: r.rows[0].created_at } });
   jsonRes(res, { success: true });
 }
 
@@ -824,6 +848,11 @@ async function getAllPublic(req, res) {
 
   let sidebarData = sidebar.rows[0] || {};
   delete sidebarData.id;
+  // Remap logo_light to logoLight for frontend
+  if (sidebarData.logo_light !== undefined) {
+    sidebarData.logoLight = sidebarData.logo_light;
+    delete sidebarData.logo_light;
+  }
   let aboutData = about.rows[0] || {};
   delete aboutData.id;
 
@@ -900,7 +929,8 @@ async function doInstall(req, res) {
     'ALTER TABLE pricing_categories ALTER COLUMN icon TYPE TEXT',
     'ALTER TABLE pricing_items ALTER COLUMN icon TYPE TEXT',
     'ALTER TABLE packages ALTER COLUMN icon TYPE TEXT',
-    'ALTER TABLE advantage_items ALTER COLUMN icon TYPE TEXT'
+    'ALTER TABLE advantage_items ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE sidebar ADD COLUMN IF NOT EXISTS logo_light TEXT DEFAULT NULL'
   ];
   for (const stmt of migrations) {
     try { await pool.query(stmt); } catch (e) { /* already TEXT or table missing */ }
