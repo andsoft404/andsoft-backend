@@ -80,21 +80,21 @@
   function saveContent(type, data) {
     DB[type] = data;
     return api(type + '.save', data).then(function(r) {
-      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error';
+      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
     }).catch(function(e) { console.warn('Save ' + type + ':', e.message); toast('Алдаа: ' + e.message, 'error'); });
   }
 
   function saveArray(type, data) {
     DB[type] = data;
     return api(type + '.replaceAll', { items: data }).then(function(r) {
-      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error';
+      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
     }).catch(function(e) { console.warn('Save ' + type + ':', e.message); toast('Алдаа: ' + e.message, 'error'); });
   }
 
   function savePricing(data) {
     DB.pricing = data;
     return api('pricing.replaceAll', { categories: data }).then(function(r) {
-      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error';
+      if (r && r.error) toast('Алдаа: ' + (r.error || 'Хадгалагдсангүй'), 'error');
     }).catch(function(e) { console.warn('Save pricing:', e.message); toast('Алдаа: ' + e.message, 'error'); });
   }
 
