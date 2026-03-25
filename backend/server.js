@@ -845,6 +845,16 @@ async function getAllPublic(req, res) {
 
 // ======== INSTALL ========
 async function doInstall(req, res) {
+  // Allow install only if no users exist (first setup) or user is super admin
+  try {
+    const userCheck = await pool.query('SELECT COUNT(*) as cnt FROM users');
+    if (parseInt(userCheck.rows[0].cnt) > 0 && !req.session.user_id) {
+      return jsonErr(res, 'Суулгалт зөвхөн анхны удаа эсвэл super admin эрхтэй хийгдэнэ', 403);
+    }
+    if (parseInt(userCheck.rows[0].cnt) > 0 && req.session.role !== 'super') {
+      return jsonErr(res, 'Эрх хүрэлцэхгүй', 403);
+    }
+  } catch (e) { /* table doesn't exist yet — allow install */ }
   const sqlPath = path.join(__dirname, 'database.sql');
   const sql = fs.readFileSync(sqlPath, 'utf-8');
   const statements = sql.split(';').map(s => s.replace(/--.*$/gm, '').trim()).filter(s => s);
