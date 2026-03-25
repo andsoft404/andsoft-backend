@@ -876,6 +876,16 @@ async function doInstall(req, res) {
   // Verify hash works
   const verify = await bcrypt.compare('andsoft123', hash);
   console.log('Install: bcrypt verify =', verify, ', hash length =', hash.length);
+  // Migrate icon columns from VARCHAR(255) to TEXT for base64 image support
+  const alterStmts = [
+    'ALTER TABLE pricing_categories ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE pricing_items ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE packages ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE advantage_items ALTER COLUMN icon TYPE TEXT'
+  ];
+  for (const stmt of alterStmts) {
+    try { await pool.query(stmt); } catch (e) { /* already TEXT or table missing */ }
+  }
   // Singletons
   await pool.query("INSERT INTO sidebar (id, subtitle) VALUES (1, '') ON CONFLICT (id) DO NOTHING");
   await pool.query("INSERT INTO about (id, \"text\") VALUES (1, '') ON CONFLICT (id) DO NOTHING");

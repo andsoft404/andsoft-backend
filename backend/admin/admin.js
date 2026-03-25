@@ -374,7 +374,7 @@
     }
 
     var cx = w / 2, cy = h / 2 - 20;
-    var radius = Math.min(w, h) / 3;
+    var radius = Math.max(Math.min(w, h) / 3, 1);
     var innerR = radius * 0.55;
     var startAngle = -Math.PI / 2;
 

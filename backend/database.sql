@@ -76,14 +76,14 @@ CREATE TABLE IF NOT EXISTS partners (
 CREATE TABLE IF NOT EXISTS pricing_categories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  icon VARCHAR(255) DEFAULT '',
+  icon TEXT DEFAULT '',
   sort_order INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS pricing_items (
   id SERIAL PRIMARY KEY,
   category_id INTEGER NOT NULL REFERENCES pricing_categories(id) ON DELETE CASCADE,
-  icon VARCHAR(255) DEFAULT '',
+  icon TEXT DEFAULT '',
   title VARCHAR(255) NOT NULL,
   price VARCHAR(255) DEFAULT '',
   description TEXT DEFAULT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS pricing_items (
 CREATE TABLE IF NOT EXISTS packages (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  icon VARCHAR(255) DEFAULT '',
+  icon TEXT DEFAULT '',
   price VARCHAR(255) DEFAULT '',
   popular SMALLINT DEFAULT 0,
   features TEXT DEFAULT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS advantage_sections (
 CREATE TABLE IF NOT EXISTS advantage_items (
   id SERIAL PRIMARY KEY,
   section_id INTEGER NOT NULL REFERENCES advantage_sections(id) ON DELETE CASCADE,
-  icon VARCHAR(255) DEFAULT '',
+  icon TEXT DEFAULT '',
   title VARCHAR(255) NOT NULL,
   description TEXT DEFAULT NULL,
   sort_order INTEGER DEFAULT 0
