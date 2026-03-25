@@ -894,6 +894,20 @@ async function doInstall(req, res) {
 }
 
 // ======== START ========
+(async () => {
+  // Auto-migrate icon columns from VARCHAR(255) to TEXT on startup
+  const migrations = [
+    'ALTER TABLE pricing_categories ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE pricing_items ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE packages ALTER COLUMN icon TYPE TEXT',
+    'ALTER TABLE advantage_items ALTER COLUMN icon TYPE TEXT'
+  ];
+  for (const stmt of migrations) {
+    try { await pool.query(stmt); } catch (e) { /* already TEXT or table missing */ }
+  }
+  console.log('DB migration check done');
+})();
+
 app.listen(PORT, () => {
   console.log(`АндСофт Backend running on port ${PORT}`);
 });
