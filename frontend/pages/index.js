@@ -614,33 +614,95 @@ export default function Home({ siteData }) {
             {/* Хамт олон — Puzzle */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <div className="puzzle-grid" style={{'--puzzle-cols': Math.min(team.length, 4) || 1}}>
+              <p className="puzzle-subtitle">Бид нэгдэж чаддаг учраа чанартай бүтээл хийдэг</p>
+              <div className="puzzle-grid">
                 {(() => {
-                  const cols = Math.min(team.length, 4) || 1;
-                  const rows = Math.ceil(team.length / cols);
-                  const P = 8, B = 92, Ct = 50, Hw = 11, N = 12;
+                  const len = team.length;
+                  if (!len) return null;
+                  const cols = len <= 2 ? len : len <= 3 ? 3 : len <= 6 ? 3 : 4;
+                  /* Generate puzzle clip-path polygon for each piece.
+                     Each edge can be: flat (0), tab outward (1), blank inward (-1).
+                     Neighbours must interlock: one tab, one blank. */
+                  const buildPoly = (eT, eR, eB, eL) => {
+                    const pts = [];
+                    const N = 16; // smoothness of curves
+                    const p = (x, y) => pts.push(x.toFixed(2) + '% ' + y.toFixed(2) + '%');
+                    // Tab parameters (in %)
+                    const depth = 10;  // how far tab protrudes
+                    const neckW = 6;   // neck half-width
+                    const headW = 8;   // head half-width (> neckW for the round part)
+                    // Top edge: left to right
+                    p(0, 0);
+                    if (eT !== 0) {
+                      p(50 - headW - 2, 0);
+                      p(50 - neckW, 0);
+                      for (let j = 0; j <= N; j++) {
+                        const a = Math.PI + (j / N) * Math.PI;
+                        p(50 + headW * Math.cos(a), -eT * depth + -eT * depth * 0.6 * Math.sin(a));
+                      }
+                      p(50 + neckW, 0);
+                      p(50 + headW + 2, 0);
+                    }
+                    p(100, 0);
+                    // Right edge: top to bottom
+                    if (eR !== 0) {
+                      p(100, 50 - headW - 2);
+                      p(100, 50 - neckW);
+                      for (let j = 0; j <= N; j++) {
+                        const a = -Math.PI / 2 + (j / N) * Math.PI;
+                        p(100 + eR * depth + eR * depth * 0.6 * Math.cos(a), 50 + headW * Math.sin(a));
+                      }
+                      p(100, 50 + neckW);
+                      p(100, 50 + headW + 2);
+                    }
+                    p(100, 100);
+                    // Bottom edge: right to left
+                    if (eB !== 0) {
+                      p(50 + headW + 2, 100);
+                      p(50 + neckW, 100);
+                      for (let j = 0; j <= N; j++) {
+                        const a = (j / N) * Math.PI;
+                        p(50 + headW * Math.cos(a), 100 + eB * depth + eB * depth * 0.6 * Math.sin(a));
+                      }
+                      p(50 - neckW, 100);
+                      p(50 - headW - 2, 100);
+                    }
+                    p(0, 100);
+                    // Left edge: bottom to top
+                    if (eL !== 0) {
+                      p(0, 50 + headW + 2);
+                      p(0, 50 + neckW);
+                      for (let j = 0; j <= N; j++) {
+                        const a = Math.PI / 2 + (j / N) * Math.PI;
+                        p(-eL * depth + -eL * depth * 0.6 * Math.cos(a), 50 + headW * Math.sin(a));
+                      }
+                      p(0, 50 - neckW);
+                      p(0, 50 - headW - 2);
+                    }
+                    return 'polygon(' + pts.join(', ') + ')';
+                  };
                   return team.map((mbr, i) => {
                     const r = Math.floor(i / cols), c = i % cols;
-                    const hasR = c < cols - 1 && i + 1 < team.length;
-                    const hasB = i + cols < team.length;
-                    const et = r === 0 ? 0 : r % 2 === 1 ? -1 : 1;
-                    const er = !hasR ? 0 : c % 2 === 0 ? 1 : -1;
-                    const eb = !hasB ? 0 : r % 2 === 0 ? 1 : -1;
-                    const el = c === 0 ? 0 : c % 2 === 1 ? -1 : 1;
-                    const pts = [];
-                    const a = (x, y) => pts.push(x.toFixed(1) + '% ' + y.toFixed(1) + '%');
-                    a(P, P);
-                    if (et) for (let j = 0; j <= N; j++) { const g = Math.PI - j * Math.PI / N; a(Ct + Hw * Math.cos(g), P - et * P * Math.sin(g)); }
-                    a(B, P);
-                    if (er) for (let j = 0; j <= N; j++) { const g = Math.PI / 2 - j * Math.PI / N; a(B + er * P * Math.cos(g), Ct - Hw * Math.sin(g)); }
-                    a(B, B);
-                    if (eb) for (let j = 0; j <= N; j++) { const g = j * Math.PI / N; a(Ct + Hw * Math.cos(g), B + eb * P * Math.sin(g)); }
-                    a(P, B);
-                    if (el) for (let j = 0; j <= N; j++) { const g = Math.PI / 2 - j * Math.PI / N; a(P - el * P * Math.cos(g), Ct + Hw * Math.sin(g)); }
+                    const hasR = c < cols - 1 && i + 1 < len;
+                    const hasB = i + cols < len;
+                    const hasL = c > 0;
+                    const hasT = r > 0;
+                    // Determine edge directions — using (r+c)%2 for alternation
+                    // Right edge of piece [r,c] = -(Left edge of piece [r,c+1])
+                    // Bottom edge of piece [r,c] = -(Top edge of piece [r+1,c])
+                    const eR = !hasR ? 0 : ((r + c) % 2 === 0 ? 1 : -1);
+                    const eB = !hasB ? 0 : ((r + c) % 2 === 0 ? 1 : -1);
+                    // Left = negative of the right edge of the piece to the left
+                    const eL = !hasL ? 0 : -((r + (c - 1)) % 2 === 0 ? 1 : -1);
+                    // Top = negative of the bottom edge of the piece above
+                    const eT = !hasT ? 0 : -(((r - 1) + c) % 2 === 0 ? 1 : -1);
+                    const clip = buildPoly(eT, eR, eB, eL);
                     return (
-                      <div key={i} className="puzzle-piece" style={{ clipPath: 'polygon(' + pts.join(',') + ')' }} data-testimonials-item>
-                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} data-testimonials-avatar />
-                        <div className="puzzle-info"><span data-testimonials-title>{mbr.role}</span></div>
+                      <div key={i} className="puzzle-piece" style={{ clipPath: clip }} data-testimonials-item>
+                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} className="puzzle-img" data-testimonials-avatar />
+                        <div className="puzzle-overlay">
+                          <div className="puzzle-name" data-testimonials-title>{mbr.role}</div>
+                        </div>
                         <p className="puzzle-hidden-desc" data-testimonials-text>{mbr.desc}</p>
                       </div>
                     );
