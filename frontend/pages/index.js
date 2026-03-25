@@ -1,7 +1,30 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
 
-export default function Home() {
+export async function getServerSideProps() {
+  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  try {
+    const hex = Buffer.from(JSON.stringify({ a: 'public.all' })).toString('hex');
+    const res = await fetch(API + '/api', { method: 'POST', body: 'h=' + hex, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+    const json = await res.json();
+    return { props: { siteData: json.data || {} } };
+  } catch (e) {
+    console.error('SSR fetch error:', e.message);
+    return { props: { siteData: {} } };
+  }
+}
+
+export default function Home({ siteData }) {
+  const sb = siteData.sidebar || {};
+  const ab = siteData.about || {};
+  const ct = siteData.contact || {};
+  const services = siteData.services || [];
+  const team = siteData.team || [];
+  const partners = siteData.partners || [];
+  const pricing = siteData.pricing || [];
+  const packages = siteData.packages || [];
+  const advantages = siteData.advantages || [];
+  const projects = siteData.projects || [];
   useEffect(() => {
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -395,14 +418,19 @@ export default function Home() {
     // Mapbox
     if (typeof mapboxgl !== 'undefined') {
       mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
-      const destCoords = [106.927123, 47.914678];
+      const destLng = parseFloat(ct.lng) || 106.927123;
+      const destLat = parseFloat(ct.lat) || 47.914678;
+      const destZoom = parseInt(ct.zoom) || 17;
+      const destCoords = [destLng, destLat];
+      const popTitle = ct.popupTitle || 'АндСофт Глобал Партнэр ХХК';
+      const popAddr = ct.popupAddress || '';
       const mapContainer = document.getElementById('mapbox-map');
       if (mapContainer) {
         const map = new mapboxgl.Map({
           container: 'mapbox-map',
           style: 'mapbox://styles/mapbox/satellite-streets-v12',
           center: destCoords,
-          zoom: 17,
+          zoom: destZoom,
           pitch: 0,
           bearing: 0,
           antialias: true
@@ -419,8 +447,8 @@ export default function Home() {
         const popupHTML = '<div class="mapbox-popup-inner">' +
           '<img src="/images/Logo1.png" alt="АндСофт" class="mapbox-popup-logo">' +
           '<div class="mapbox-popup-info">' +
-          '<div class="mapbox-popup-title">АндСофт Глобал Партнэр ХХК</div>' +
-          '<div class="mapbox-popup-text">Embassy One бизнес оффис 10 давхарт<br>Улаанбаатар, Монгол</div>' +
+          '<div class="mapbox-popup-title">' + popTitle + '</div>' +
+          '<div class="mapbox-popup-text">' + popAddr + '</div>' +
           '</div></div>' +
           '<img src="/images/embassy.jpg" alt="Embassy One" class="mapbox-popup-embassy-img">' +
           '<button class="mapbox-popup-directions" onclick="mapboxNavigate()"><ion-icon name="navigate-outline"></ion-icon> Очих</button>';
@@ -434,12 +462,12 @@ export default function Home() {
         window.mapboxNavigate = function () {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (pos) {
-              window.open('https://www.google.com/maps/dir/' + pos.coords.latitude + ',' + pos.coords.longitude + '/47.914678,106.927123', '_blank');
+              window.open('https://www.google.com/maps/dir/' + pos.coords.latitude + ',' + pos.coords.longitude + '/' + destLat + ',' + destLng, '_blank');
             }, function () {
-              window.open('https://maps.app.goo.gl/SLDCYq9tcWUZjs5K9', '_blank');
+              window.open('https://www.google.com/maps/dir/?api=1&destination=' + destLat + ',' + destLng, '_blank');
             });
           } else {
-            window.open('https://maps.app.goo.gl/SLDCYq9tcWUZjs5K9', '_blank');
+            window.open('https://www.google.com/maps/dir/?api=1&destination=' + destLat + ',' + destLng, '_blank');
           }
         };
 
@@ -472,11 +500,11 @@ export default function Home() {
         <aside className="sidebar" data-sidebar>
           <div className="sidebar-info">
             <figure className="avatar-box">
-              <img src="/images/AndSoft-Logo.png" alt="АндСофт Глобал Партнэр" width="120" className="logo-dark" />
+              <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт Глобал Партнэр" width="120" className="logo-dark" />
               <img src="/images/AndSoft-Logo-Light.png" alt="АндСофт Глобал Партнэр" width="120" className="logo-light" />
             </figure>
             <div className="info-content">
-              <p className="title">IT Компани</p>
+              <p className="title">{sb.subtitle || 'IT Компани'}</p>
             </div>
             <button className="info_more-btn" data-sidebar-btn>
               <span>Дэлгэрэнгүй</span>
@@ -487,32 +515,32 @@ export default function Home() {
           <div className="sidebar-info_more">
             <div className="separator"></div>
             <ul className="contacts-list">
-              <li className="contact-item">
+              {sb.email && <li className="contact-item">
                 <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
                 <div className="contact-info">
                   <p className="contact-title">Имэйл</p>
-                  <a href="mailto:AndSoftGP@protonmail.com" className="contact-link">AndSoftGP@protonmail.com</a>
+                  <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
                 </div>
-              </li>
-              <li className="contact-item">
+              </li>}
+              {sb.phone && <li className="contact-item">
                 <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
                 <div className="contact-info">
                   <p className="contact-title">Утас</p>
-                  <a href="tel:+97694496014" className="contact-link">9449-6014</a>
+                  <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
                 </div>
-              </li>
-              <li className="contact-item">
+              </li>}
+              {sb.address && <li className="contact-item">
                 <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
                 <div className="contact-info">
                   <p className="contact-title">Байршил</p>
-                  <address>Улаанбаатар, Embassy One бизнес оффис 10 давхарт</address>
+                  <address>{sb.address}</address>
                 </div>
-              </li>
+              </li>}
             </ul>
             <div className="separator"></div>
             <ul className="social-list">
-              <li className="social-item"><a href="#" className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>
-              <li className="social-item"><a href="#" className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>
+              {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
+              {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
             </ul>
           </div>
         </aside>
@@ -545,42 +573,22 @@ export default function Home() {
             <header><h2 className="h2 article-title">Танилцуулга</h2></header>
 
             <section className="about-text">
-              <p>АндСофт Глобал Партнэр компани нь оюутан наснаас эхэлсэн нөхөрлөл, хамтын мөрөөдлөөс төрсөн мэдээлэл технологийн компани юм. Манай компани вебсайт болон мобайл аппликейшн хөгжүүлэлтийн чиглэлээр үйл ажиллагаа явуулдаг бөгөөд салбартаа хөгжиж буй чадварлаг залуу хамт олонтой.</p>
-              <p>Манай хамт олон 5 хүний бүрэлдэхүүнтэй бөгөөд програм хангамжийн хөгжүүлэлт, UI/UX дизайн, системийн дизайн зэрэг чиглэлүүдээр мэргэшсэн. Бид байгууллагын хэрэгцээ шаардлагад нийцсэн, орчин үеийн технологид суурилсан, найдвартай шийдлүүдийг санал болгон ажилладаг.</p>
+              {ab.text ? ab.text.split('\n').filter(p => p.trim()).map((p, i) => <p key={i}>{p}</p>) : <p>Мэдээлэл байхгүй.</p>}
             </section>
 
             {/* Үйл ажиллагааны чиглэл */}
             <section className="service">
               <h3 className="h3 service-title">Үйл ажиллагааны чиглэл</h3>
               <ul className="service-list">
-                <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="globe-outline" style={{fontSize: '36px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
-                  <div className="service-content-box">
-                    <h4 className="h4 service-item-title">Байгууллагын вебсайт хөгжүүлэлт</h4>
-                    <p className="service-item-text">Орчин үеийн технологид суурилсан, хариуцлагатай вебсайт хөгжүүлэлт.</p>
-                  </div>
-                </li>
-                <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="phone-portrait-outline" style={{fontSize: '36px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
-                  <div className="service-content-box">
-                    <h4 className="h4 service-item-title">Мобайл аппликейшн (iOS, Android)</h4>
-                    <p className="service-item-text">iOS болон Android платформд зориулсан мэргэжлийн аппликейшн хөгжүүлэлт.</p>
-                  </div>
-                </li>
-                <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="settings-outline" style={{fontSize: '36px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
-                  <div className="service-content-box">
-                    <h4 className="h4 service-item-title">Байгууллагын дотоод систем (CRM, ERP)</h4>
-                    <p className="service-item-text">Байгууллагын үйл ажиллагааг автоматжуулах дотоод системийн шийдэл.</p>
-                  </div>
-                </li>
-                <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="code-slash-outline" style={{fontSize: '36px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
-                  <div className="service-content-box">
-                    <h4 className="h4 service-item-title">Backend систем болон API хөгжүүлэлт</h4>
-                    <p className="service-item-text">Найдвартай backend систем, API интеграци болон UI/UX дизайны шийдэл.</p>
-                  </div>
-                </li>
+                {services.map((s, i) => (
+                  <li key={i} className="service-item">
+                    <div className="service-icon-box"><ion-icon name={s.icon || 'code-slash-outline'} style={{fontSize: '36px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
+                    <div className="service-content-box">
+                      <h4 className="h4 service-item-title">{s.title}</h4>
+                      <p className="service-item-text">{s.desc}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </section>
 
@@ -591,14 +599,14 @@ export default function Home() {
                 <div className="mv-card-icon"><ion-icon name="flag-outline"></ion-icon></div>
                 <div className="mv-card-content">
                   <h3 className="h3 mv-card-title">Эрхэм зорилго</h3>
-                  <p>Орчин үеийн технологийн шийдлээр дамжуулан байгууллагуудын үйл ажиллагааг хялбарчилж, үр ашигтай болгоход хувь нэмэр оруулах.</p>
+                  <p>{ab.mission || ''}</p>
                 </div>
               </div>
               <div className="mv-card">
                 <div className="mv-card-icon"><ion-icon name="eye-outline"></ion-icon></div>
                 <div className="mv-card-content">
                   <h3 className="h3 mv-card-title">Алсын хараа</h3>
-                  <p>Мэдээлэл технологид суурилсан, олон салбарыг хамарсан дэлхийн түншлэлийн экосистемийг бүтээх.</p>
+                  <p>{ab.vision || ''}</p>
                 </div>
               </div>
             </section>
@@ -607,41 +615,15 @@ export default function Home() {
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
               <ul className="testimonials-list has-scrollbar">
-                <li className="testimonials-item">
-                  <div className="content-card" data-testimonials-item>
-                    <figure className="testimonials-avatar-box"><img src="/images/avatar-1.png" alt="CEO" width="60" data-testimonials-avatar /></figure>
-                    <h4 className="h4 testimonials-item-title" data-testimonials-title>Гүйцэтгэх захирал (CEO)</h4>
-                    <div className="testimonials-text" data-testimonials-text><p>Санхүү, маркетинг, компанийн ерөнхий удирдлагыг хариуцна.</p></div>
-                  </div>
-                </li>
-                <li className="testimonials-item">
-                  <div className="content-card" data-testimonials-item>
-                    <figure className="testimonials-avatar-box"><img src="/images/avatar-2.png" alt="CTO" width="60" data-testimonials-avatar /></figure>
-                    <h4 className="h4 testimonials-item-title" data-testimonials-title>Дэд захирал / CTO</h4>
-                    <div className="testimonials-text" data-testimonials-text><p>Системийн архитектур, Backend, Data analysis, нийт хөгжүүлэлт хариуцна. Developer баг удирдана.</p></div>
-                  </div>
-                </li>
-                <li className="testimonials-item">
-                  <div className="content-card" data-testimonials-item>
-                    <figure className="testimonials-avatar-box"><img src="/images/avatar-3.png" alt="Product Designer" width="60" data-testimonials-avatar /></figure>
-                    <h4 className="h4 testimonials-item-title" data-testimonials-title>Product Designer / UI UX</h4>
-                    <div className="testimonials-text" data-testimonials-text><p>Апп, вэбийн дизайн, хэрэглэгчийн туршлага (UX), интерфейс (UI) хариуцна.</p></div>
-                  </div>
-                </li>
-                <li className="testimonials-item">
-                  <div className="content-card" data-testimonials-item>
-                    <figure className="testimonials-avatar-box"><img src="/images/avatar-4.png" alt="Business Development" width="60" data-testimonials-avatar /></figure>
-                    <h4 className="h4 testimonials-item-title" data-testimonials-title>Business Development Manager</h4>
-                    <div className="testimonials-text" data-testimonials-text><p>Харилцагчтай уулзалт, захиалга авах, маркетинг, сурталчилгаа хариуцна.</p></div>
-                  </div>
-                </li>
-                <li className="testimonials-item">
-                  <div className="content-card" data-testimonials-item>
-                    <figure className="testimonials-avatar-box"><img src="/images/avatar-1.png" alt="Frontend Architect" width="60" data-testimonials-avatar /></figure>
-                    <h4 className="h4 testimonials-item-title" data-testimonials-title>Frontend Architect</h4>
-                    <div className="testimonials-text" data-testimonials-text><p>Вэб, аппын хэрэглэгчид харагдах интерфэйс хөгжүүлэх. UI-г код болгох (Next, React, Flutter гэх мэт).</p></div>
-                  </div>
-                </li>
+                {team.map((m, i) => (
+                  <li key={i} className="testimonials-item">
+                    <div className="content-card" data-testimonials-item>
+                      <figure className="testimonials-avatar-box"><img src={m.image || '/images/avatar-1.png'} alt={m.role} width="60" data-testimonials-avatar /></figure>
+                      <h4 className="h4 testimonials-item-title" data-testimonials-title>{m.role}</h4>
+                      <div className="testimonials-text" data-testimonials-text><p>{m.desc}</p></div>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </section>
 
@@ -649,11 +631,9 @@ export default function Home() {
             <section className="clients">
               <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
               <ul className="clients-list has-scrollbar">
-                <li className="clients-item"><a href="https://www.bersfinance.mn"><img src="/images/bers.png" alt="Бэрс Финанс" /></a></li>
-                <li className="clients-item"><a href="https://www.bichilglobus.mn"><img src="/images/bichil.svg" alt="Бичил Глобүс" /></a></li>
-                <li className="clients-item"><a href="https://baavar.mn"><img src="/images/baavar.png" alt="Баавар Сугалаа" /></a></li>
-                <li className="clients-item"><a href="https://sono.mn"><img src="/images/sono.webp" alt="Соно" /></a></li>
-                <li className="clients-item"><a href="https://topica.mn"><img src="/images/Топика.png" alt="Топика" /></a></li>
+                {partners.map((p, i) => (
+                  <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+                ))}
               </ul>
             </section>
 
@@ -679,118 +659,25 @@ export default function Home() {
           <article className="resume" data-page="үнэ">
             <header><h2 className="h2 article-title">Үйлчилгээний үнэ</h2></header>
 
-            {/* Вебсайт хийх үнэ */}
-            <section className="timeline accordion-section">
-              <div className="title-wrapper accordion-header" data-accordion-header>
-                <div className="icon-box"><ion-icon name="globe-outline"></ion-icon></div>
-                <h3 className="h3">1. Вебсайт хийх үнэ</h3>
-                <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
-              </div>
-              <ol className="timeline-list accordion-body" data-accordion-body>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="newspaper-outline"></ion-icon> Энгийн вебсайт (танилцуулга сайт)</h4>
-                  <span>200,000 – 500,000₮</span>
-                  <p className="timeline-text">3–5 хуудас (Home, About, Contact). Responsive дизайн.</p>
-                </li>
-                <li className="timeline-item">
-                  <span className="timeline-popular-badge">Түгээмэл</span>
-                  <h4 className="h4 timeline-item-title"><ion-icon name="briefcase-outline"></ion-icon> Дунд түвшин (Business сайт)</h4>
-                  <span>600,000 – 2,500,000₮</span>
-                  <p className="timeline-text">Admin хэсэгтэй. Мэдээлэл, зураг нэмэх боломжтой.</p>
-                </li>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="construct-outline"></ion-icon> Хүнд (Custom системтэй веб)</h4>
-                  <span>3,000,000 – 8,000,000₮ (+)</span>
-                  <p className="timeline-text">Захиалга, хэрэглэгчийн бүртгэл. Төлбөр, API холболт.</p>
-                </li>
-              </ol>
-            </section>
-
-            {/* Гар утасны апп */}
-            <section className="timeline accordion-section">
-              <div className="title-wrapper accordion-header" data-accordion-header>
-                <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
-                <h3 className="h3">2. Гар утасны апп (Android / iOS)</h3>
-                <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
-              </div>
-              <ol className="timeline-list accordion-body" data-accordion-body>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="phone-portrait-outline"></ion-icon> Энгийн түвшиний апп</h4>
-                  <span>500,000 – 1,000,000₮</span>
-                  <p className="timeline-text">Танилцуулга, мэдээлэл харах.</p>
-                </li>
-                <li className="timeline-item">
-                  <span className="timeline-popular-badge">Түгээмэл</span>
-                  <h4 className="h4 timeline-item-title"><ion-icon name="apps-outline"></ion-icon> Дунд түвшиний апп</h4>
-                  <span>1,500,000 – 6,000,000₮</span>
-                  <p className="timeline-text">Login, өгөгдөл хадгалах. API холболт.</p>
-                </li>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="server-outline"></ion-icon> Том систем апп</h4>
-                  <span>7,000,000 – 15,000,000₮ (+)</span>
-                  <p className="timeline-text">Чат, төлбөр, realtime систем.</p>
-                </li>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="chatbubble-ellipses-outline"></ion-icon> AI chatbot + Админ эрхээс модел сургана</h4>
-                  <span>3,000,000 – 4,000,000₮</span>
-                  <p className="timeline-text">AI суурьтай чатбот систем, админ эрхээр модел сургах боломжтой.</p>
-                </li>
-              </ol>
-            </section>
-
-            {/* Систем / автоматжуулалт */}
-            <section className="timeline accordion-section">
-              <div className="title-wrapper accordion-header" data-accordion-header>
-                <div className="icon-box"><ion-icon name="settings-outline"></ion-icon></div>
-                <h3 className="h3">3. Систем / Автоматжуулалт</h3>
-                <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
-              </div>
-              <ol className="timeline-list accordion-body" data-accordion-body>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="sync-outline"></ion-icon> Жижиг автоматжуулалт</h4>
-                  <span>500,000 – 1,200,000₮</span>
-                  <p className="timeline-text">Excel → систем. Тайлан, workflow гэх мэт.</p>
-                </li>
-                <li className="timeline-item">
-                  <span className="timeline-popular-badge">Түгээмэл</span>
-                  <h4 className="h4 timeline-item-title"><ion-icon name="grid-outline"></ion-icon> Дунд систем</h4>
-                  <span>2,000,000 – 7,000,000₮</span>
-                  <p className="timeline-text">CRM, бүртгэл, удирдлага.</p>
-                </li>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="layers-outline"></ion-icon> Том систем (custom ERP)</h4>
-                  <span>8,000,000 – 20,000,000₮ (+)</span>
-                  <p className="timeline-text">Байгууллагын бүрэн систем.</p>
-                </li>
-              </ol>
-            </section>
-
-            {/* Нэмэлт үйлчилгээ */}
-            <section className="timeline accordion-section">
-              <div className="title-wrapper accordion-header" data-accordion-header>
-                <div className="icon-box"><ion-icon name="add-circle-outline"></ion-icon></div>
-                <h3 className="h3">Нэмэлт үйлчилгээ</h3>
-                <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
-              </div>
-              <ol className="timeline-list accordion-body" data-accordion-body>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="cloud-outline"></ion-icon> Hosting setup</h4>
-                  <span>160,000₮ – 260,000₮</span>
-                  <p className="timeline-text">Манайхаас гарган (domain, hosting-server).</p>
-                </li>
-                <li className="timeline-item">
-                  <span className="timeline-popular-badge">Түгээмэл</span>
-                  <h4 className="h4 timeline-item-title"><ion-icon name="color-palette-outline"></ion-icon> UI/UX дизайн</h4>
-                  <span>300,000 – 1,000,000₮</span>
-                  <p className="timeline-text">Хэрэглэгчийн туршлагын дизайны шийдэл.</p>
-                </li>
-                <li className="timeline-item">
-                  <h4 className="h4 timeline-item-title"><ion-icon name="hammer-outline"></ion-icon> Bug fix / update</h4>
-                  <span>30,000 – 80,000₮</span>
-                  <p className="timeline-text">Алдаа засах, шинэчлэлт хийх.</p>
-                </li>
-              </ol>
-            </section>
+            {pricing.map((cat, ci) => (
+              <section key={ci} className="timeline accordion-section">
+                <div className="title-wrapper accordion-header" data-accordion-header>
+                  <div className="icon-box"><ion-icon name={cat.icon || 'pricetag-outline'}></ion-icon></div>
+                  <h3 className="h3">{ci + 1}. {cat.name}</h3>
+                  <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
+                </div>
+                <ol className="timeline-list accordion-body" data-accordion-body>
+                  {(cat.items || []).map((item, ii) => (
+                    <li key={ii} className="timeline-item">
+                      {item.popular && <span className="timeline-popular-badge">Түгээмэл</span>}
+                      <h4 className="h4 timeline-item-title"><ion-icon name={item.icon || 'ellipse-outline'}></ion-icon> {item.title}</h4>
+                      <span>{item.price}</span>
+                      <p className="timeline-text">{item.desc}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
           </article>
 
           {/* БАГЦ */}
@@ -798,72 +685,23 @@ export default function Home() {
             <header><h2 className="h2 article-title">Багцууд</h2></header>
             <section className="pricing-packages">
               <ul className="service-list pricing-grid">
-                <li className="service-item pricing-card">
-                  <div className="pricing-badge-area"></div>
-                  <div className="pricing-icon-circle"><ion-icon name="leaf-outline"></ion-icon></div>
-                  <div className="pricing-header">
-                    <h4 className="h4 service-item-title pricing-title">Starter багц</h4>
-                    <span className="pricing-amount">1,500,000₮</span>
-                  </div>
-                  <div className="service-content-box">
-                    <ul className="pricing-features">
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Танилцуулга сайт</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Админ эрх</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Responsive дизайн</li>
-                    </ul>
-                  </div>
-                </li>
-                <li className="service-item pricing-card">
-                  <div className="pricing-badge-area"></div>
-                  <div className="pricing-icon-circle"><ion-icon name="diamond-outline"></ion-icon></div>
-                  <div className="pricing-header">
-                    <h4 className="h4 service-item-title pricing-title">Basic багц</h4>
-                    <span className="pricing-amount">6,000,000₮</span>
-                  </div>
-                  <div className="service-content-box">
-                    <ul className="pricing-features">
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Админ эрх</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Сайт</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Чатбот</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> UI/UX дизайн</li>
-                    </ul>
-                  </div>
-                </li>
-                <li className="service-item pricing-card pricing-card-popular">
-                  <div className="pricing-badge-area"><span className="pricing-badge">Түгээмэл</span></div>
-                  <div className="pricing-icon-circle"><ion-icon name="briefcase-outline"></ion-icon></div>
-                  <div className="pricing-header">
-                    <h4 className="h4 service-item-title pricing-title">Business багц</h4>
-                    <span className="pricing-amount">15,000,000₮</span>
-                  </div>
-                  <div className="service-content-box">
-                    <ul className="pricing-features">
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Веб</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Апп</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Систем</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> API холболт</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Тусгай дизайн</li>
-                    </ul>
-                  </div>
-                </li>
-                <li className="service-item pricing-card">
-                  <div className="pricing-badge-area"></div>
-                  <div className="pricing-icon-circle"><ion-icon name="rocket-outline"></ion-icon></div>
-                  <div className="pricing-header">
-                    <h4 className="h4 service-item-title pricing-title">Premium багц</h4>
-                    <span className="pricing-amount">30,000,000₮</span>
-                  </div>
-                  <div className="service-content-box">
-                    <ul className="pricing-features">
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Веб</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Апп</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Систем</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> AI чатбот</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Бүрэн тусгай дизайн</li>
-                      <li><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> Дэмжлэг, засвар</li>
-                    </ul>
-                  </div>
-                </li>
+                {packages.map((pkg, i) => (
+                  <li key={i} className={`service-item pricing-card${pkg.popular ? ' pricing-card-popular' : ''}`}>
+                    <div className="pricing-badge-area">{pkg.popular && <span className="pricing-badge">Түгээмэл</span>}</div>
+                    <div className="pricing-icon-circle"><ion-icon name={pkg.icon || 'cube-outline'}></ion-icon></div>
+                    <div className="pricing-header">
+                      <h4 className="h4 service-item-title pricing-title">{pkg.name}</h4>
+                      <span className="pricing-amount">{pkg.price}</span>
+                    </div>
+                    <div className="service-content-box">
+                      <ul className="pricing-features">
+                        {(pkg.features || []).map((f, fi) => (
+                          <li key={fi}><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> {f}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </section>
           </article>
@@ -872,87 +710,23 @@ export default function Home() {
           <article className="blog" data-page="давуу тал">
             <header><h2 className="h2 article-title">Давуу тал</h2></header>
 
-            <section className="advantage-section">
-              <div className="advantage-section-header">
-                <span className="advantage-number">01</span>
-                <h3 className="h3 service-title">Манай багийн давуу тал</h3>
-              </div>
-              <ul className="advantage-grid">
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="flash-outline"></ion-icon></div>
-                  <h4 className="h4">Хурдтай, уян хатан гүйцэтгэл</h4>
-                  <p>Төслийг хурдан, оновчтой хугацаанд хүлээлгэн өгнө.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="bulb-outline"></ion-icon></div>
-                  <h4 className="h4">Захиалагчид тохирсон шийдэл</h4>
-                  <p>Хэрэгцээнд нийцсэн, бизнесийн зорилгод чиглэсэн шийдэл боловсруулна.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="rocket-outline"></ion-icon></div>
-                  <h4 className="h4">Шинэлэг технологи</h4>
-                  <p>Орчин үеийн хамгийн сүүлийн үеийн технологиудыг ашиглана.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
-                  <h4 className="h4">Хариуцлагатай хамтын ажиллагаа</h4>
-                  <p>Нээлттэй, ил тод, итгэлтэй хамтын ажиллагааг эрхэмлэнэ.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="people-outline"></ion-icon></div>
-                  <h4 className="h4">Багийн хүчирхэг ажиллагаа</h4>
-                  <p>5 мэргэшсэн гишүүнтэй, багаар хамтран ажиллах өндөр чадвартай.</p>
-                </li>
-              </ul>
-            </section>
-
-            <section className="advantage-section">
-              <div className="advantage-section-header">
-                <span className="advantage-number">02</span>
-                <h3 className="h3 service-title">Туршлага, хэрэгжүүлсэн ажлууд</h3>
-              </div>
-              <ul className="advantage-grid">
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="business-outline"></ion-icon></div>
-                  <h4 className="h4">Санхүүгийн байгууллагууд</h4>
-                  <p>Банк бус санхүүгийн байгууллагуудтай хамтарсан төслүүд амжилттай хэрэгжүүлсэн.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="code-slash-outline"></ion-icon></div>
-                  <h4 className="h4">Хөгжүүлэлтийн ажлууд</h4>
-                  <p>Нэг удаагийн болон богино хугацааны хөгжүүлэлтийн шаардлагуудыг чанартай биелүүлсэн.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="checkmark-done-outline"></ion-icon></div>
-                  <h4 className="h4">Захиалагчид тохирсон шийдэл</h4>
-                  <p>Захиалагчийн шаардлагад нийцсэн веб болон системийн шийдлүүдийг хугацаанд нь, чанартай гүйцэтгэсэн.</p>
-                </li>
-              </ul>
-            </section>
-
-            <section className="advantage-section">
-              <div className="advantage-section-header">
-                <span className="advantage-number">03</span>
-                <h3 className="h3 service-title">Хамтын ажиллагаа</h3>
-              </div>
-              <ul className="advantage-grid">
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="globe-outline"></ion-icon></div>
-                  <h4 className="h4">Шинэ бүтээгдэхүүн</h4>
-                  <p>Шинэ вебсайт, аппликейшн хөгжүүлэх.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="build-outline"></ion-icon></div>
-                  <h4 className="h4">Систем сайжруулалт</h4>
-                  <p>Одоо ашиглаж буй системийг сайжруулах, автоматжуулалт хийх.</p>
-                </li>
-                <li className="advantage-card">
-                  <div className="advantage-card-icon"><ion-icon name="trending-up-outline"></ion-icon></div>
-                  <h4 className="h4">Урт хугацааны түншлэл</h4>
-                  <p>Урт хугацааны технологийн хамтын ажиллагааг зорьдог. Захиалагчийн бизнесийн зорилгод нийцсэн шийдлийг санал болгож, хамтран хөгжинө.</p>
-                </li>
-              </ul>
-            </section>
+            {advantages.map((sec, si) => (
+              <section key={si} className="advantage-section">
+                <div className="advantage-section-header">
+                  <span className="advantage-number">{sec.number || String(si + 1).padStart(2, '0')}</span>
+                  <h3 className="h3 service-title">{sec.title}</h3>
+                </div>
+                <ul className="advantage-grid">
+                  {(sec.items || []).map((item, ii) => (
+                    <li key={ii} className="advantage-card">
+                      <div className="advantage-card-icon"><ion-icon name={item.icon || 'star-outline'}></ion-icon></div>
+                      <h4 className="h4">{item.title}</h4>
+                      <p>{item.desc}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
           </article>
 
           {/* ТӨСӨЛ */}
@@ -966,127 +740,27 @@ export default function Home() {
 
             <section className="projects-section">
               <ul className="projects-grid">
-                {/* Хийсэн төслүүд */}
-                <li className="project-card" data-category="project" data-project-card>
-                  <figure className="project-img-box"><img src="/images/project-1.png" alt="ББСБ вебсайт" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">ББСБ вебсайт</h4>
-                    <p>Банк бус санхүүгийн байгууллагын танилцуулга сайт, онлайн зээлийн хүсэлт.</p>
-                    <div className="project-tags"><span className="project-tag">Веб</span><span className="project-tag">Систем</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>ББСБ вебсайт</div>
-                    <div data-detail-desc>Банк бус санхүүгийн байгууллагын бүрэн танилцуулга сайт. Онлайн зээлийн хүсэлт хүлээн авах систем, автомат тооцоолуур, хэрэглэгчийн бүртгэл, админ удирдлагын самбартай. Responsive дизайн, SEO оновчлолтой.</div>
-                    <div data-detail-imgs>/images/project-1.png,/images/project-1.png,/images/project-1.png,/images/project-1.png,/images/project-1.png,/images/project-1.png</div>
-                  </div>
-                </li>
-
-                <li className="project-card" data-category="project" data-project-card>
-                  <figure className="project-img-box"><img src="/images/project-2.png" alt="Бизнес удирдлагын апп" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">Бизнес удирдлагын апп</h4>
-                    <p>Байгууллагын дотоод үйл ажиллагааг удирдах мобайл аппликейшн.</p>
-                    <div className="project-tags"><span className="project-tag">Апп</span><span className="project-tag">Android</span><span className="project-tag">iOS</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>Бизнес удирдлагын апп</div>
-                    <div data-detail-desc>Байгууллагын дотоод үйл ажиллагааг бүрэн удирдах мобайл аппликейшн. Ажилтны бүртгэл, цагийн хуваарь, мэдэгдэл, тайлан, дотоод чат систем. Android болон iOS хоёулаад дээр ажиллана.</div>
-                    <div data-detail-imgs>/images/project-2.png,/images/project-2.png,/images/project-2.png,/images/project-2.png,/images/project-2.png,/images/project-2.png</div>
-                  </div>
-                </li>
-
-                <li className="project-card" data-category="project" data-project-card>
-                  <figure className="project-img-box"><img src="/images/project-3.png" alt="AI Чатбот" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">AI Чатбот систем</h4>
-                    <p>AI суурьтай чатбот. Админ эрхээс модел сургах боломжтой.</p>
-                    <div className="project-tags"><span className="project-tag">AI</span><span className="project-tag">Чатбот</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>AI Чатбот систем</div>
-                    <div data-detail-desc>Хэрэглэгчийн асуултанд автоматаар хариулдаг AI суурьтай чатбот систем. Админ панелаас өөрийн датагаар модел сургах, хариултуудыг удирдах, анализ хийх боломжтой. Вебсайт болон аппд шууд холбож ашиглана.</div>
-                    <div data-detail-imgs>/images/project-3.png,/images/project-3.png,/images/project-3.png,/images/project-3.png,/images/project-3.png,/images/project-3.png</div>
-                  </div>
-                </li>
-
-                <li className="project-card" data-category="project" data-project-card>
-                  <figure className="project-img-box"><img src="/images/project-4.png" alt="CRM систем" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">CRM систем</h4>
-                    <p>Харилцагчийн бүртгэл, захиалгын удирдлага, тайлан тооцоо.</p>
-                    <div className="project-tags"><span className="project-tag">Систем</span><span className="project-tag">CRM</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>CRM систем</div>
-                    <div data-detail-desc>Харилцагчийн бүртгэл, захиалгын удирдлага, тайлан тооцооны бүрэн систем. Ажилтан тус бүрийн гүйцэтгэл, борлуулалтын мэдээ, дашбоард, автомат мэдэгдэл зэрэг функцтэй.</div>
-                    <div data-detail-imgs>/images/project-4.png,/images/project-4.png,/images/project-4.png,/images/project-4.png,/images/project-4.png,/images/project-4.png</div>
-                  </div>
-                </li>
-
-                {/* Бэлэн загвар, сайтууд */}
-                <li className="project-card template-card" data-category="template" data-project-card>
-                  <figure className="project-img-box"><img src="/images/template-1.png" alt="Танилцуулга вебсайт" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">Танилцуулга вебсайт</h4>
-                    <p>Байгууллага, хувь хүний танилцуулга сайт. Responsive дизайн.</p>
-                    <span className="template-price">200,000 – 500,000₮</span>
-                    <div className="project-tags"><span className="project-tag">Загвар</span><span className="project-tag">Веб</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>Танилцуулга вебсайт</div>
-                    <div data-detail-desc>Байгууллага эсвэл хувь хүний танилцуулгыг орчин үеийн дизайнаар гоёж харуулах responsive вебсайт. Бүрэн custom болгох боломжтой, SEO оновчлолтой, хурдан ачаалалттай.</div>
-                    <div data-detail-imgs>/images/template-1.png,/images/template-1.png,/images/template-1.png,/images/template-1.png,/images/template-1.png,/images/template-1.png</div>
-                    <div data-detail-price>200,000 – 500,000₮</div>
-                  </div>
-                </li>
-
-                <li className="project-card template-card" data-category="template" data-project-card>
-                  <figure className="project-img-box"><img src="/images/template-2.png" alt="E-commerce сайт" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">E-commerce сайт</h4>
-                    <p>Онлайн дэлгүүр эхлүүлэхэд бэлэн. Сагс, төлбөр.</p>
-                    <span className="template-price">600,000 – 2,500,000₮</span>
-                    <div className="project-tags"><span className="project-tag">Загвар</span><span className="project-tag">Дэлгүүр</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>E-commerce сайт</div>
-                    <div data-detail-desc>Онлайн дэлгүүр нээхэд бүрэн бэлэн template. Бүтээгдэхүүний жагсаалт, шүүлтүүр, сагсны систем, онлайн төлбөр, захиалгын удирдлага, админ панел орсон.</div>
-                    <div data-detail-imgs>/images/template-2.png,/images/template-2.png,/images/template-2.png,/images/template-2.png,/images/template-2.png,/images/template-2.png</div>
-                    <div data-detail-price>600,000 – 2,500,000₮</div>
-                  </div>
-                </li>
-
-                <li className="project-card template-card" data-category="template" data-project-card>
-                  <figure className="project-img-box"><img src="/images/template-3.png" alt="Ресторан / Кафе сайт" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">Ресторан / Кафе сайт</h4>
-                    <p>Цэс, захиалга, байршлын мэдээлэлтэй вебсайт.</p>
-                    <span className="template-price">300,000 – 1,000,000₮</span>
-                    <div className="project-tags"><span className="project-tag">Загвар</span><span className="project-tag">Хоол</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>Ресторан / Кафе сайт</div>
-                    <div data-detail-desc>Ресторан, кафе, хоолны газрын бүрэн вебсайт. Цэс зургаар харуулах, онлайн захиалга, байршлын газрын зураг, ажиллах цагийн хуваарь, холбоо барих мэдээлэлтэй.</div>
-                    <div data-detail-imgs>/images/template-3.png,/images/template-3.png,/images/template-3.png,/images/template-3.png,/images/template-3.png,/images/template-3.png</div>
-                    <div data-detail-price>300,000 – 1,000,000₮</div>
-                  </div>
-                </li>
-
-                <li className="project-card template-card" data-category="template" data-project-card>
-                  <figure className="project-img-box"><img src="/images/template-4.png" alt="Сургалтын систем" loading="lazy" /></figure>
-                  <div className="project-card-content">
-                    <h4 className="h4">Сургалтын систем (LMS)</h4>
-                    <p>Онлайн сургалт явуулах бэлэн систем.</p>
-                    <span className="template-price">500,000 – 3,000,000₮</span>
-                    <div className="project-tags"><span className="project-tag">Загвар</span><span className="project-tag">Систем</span></div>
-                  </div>
-                  <div className="project-detail-data" style={{display:'none'}}>
-                    <div data-detail-title>Сургалтын систем (LMS)</div>
-                    <div data-detail-desc>Онлайн сургалт явуулах бүрэн систем. Хичээл оруулах, шалгалт авах, суралцагчийн бүртгэл, явц хянах, сертификат олгох зэрэг бүрэн функцтэй LMS платформ.</div>
-                    <div data-detail-imgs>/images/template-4.png,/images/template-4.png,/images/template-4.png,/images/template-4.png,/images/template-4.png,/images/template-4.png</div>
-                    <div data-detail-price>500,000 – 3,000,000₮</div>
-                  </div>
-                </li>
+                {projects.map((proj, i) => {
+                  const tagsArr = typeof proj.tags === 'string' ? proj.tags.split(',').map(t => t.trim()).filter(Boolean) : (proj.tags || []);
+                  const imgs = proj.image ? proj.image.split(',').map(s => s.trim()).filter(Boolean) : [];
+                  return (
+                    <li key={i} className={`project-card${proj.category === 'template' ? ' template-card' : ''}`} data-category={proj.category || 'project'} data-project-card>
+                      <figure className="project-img-box"><img src={imgs[0] || '/images/project-1.png'} alt={proj.name} loading="lazy" /></figure>
+                      <div className="project-card-content">
+                        <h4 className="h4">{proj.name}</h4>
+                        <p>{proj.shortDesc}</p>
+                        {proj.price && <span className="template-price">{proj.price}</span>}
+                        <div className="project-tags">{tagsArr.map((t, ti) => <span key={ti} className="project-tag">{t}</span>)}</div>
+                      </div>
+                      <div className="project-detail-data" style={{display:'none'}}>
+                        <div data-detail-title>{proj.name}</div>
+                        <div data-detail-desc>{proj.desc}</div>
+                        <div data-detail-imgs>{imgs.join(',')}</div>
+                        {proj.price && <div data-detail-price>{proj.price}</div>}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
 
@@ -1142,20 +816,20 @@ export default function Home() {
 
             <section className="contact-info-section" style={{marginBottom: '30px'}}>
               <ul className="service-list">
-                <li className="service-item">
+                {ct.email && <li className="service-item">
                   <div className="service-icon-box"><ion-icon name="mail-outline" style={{fontSize: '24px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
                   <div className="service-content-box">
                     <h4 className="h4 service-item-title">Имэйл</h4>
-                    <p className="service-item-text">AndSoftGP@protonmail.com</p>
+                    <p className="service-item-text">{ct.email}</p>
                   </div>
-                </li>
-                <li className="service-item">
+                </li>}
+                {ct.phone && <li className="service-item">
                   <div className="service-icon-box"><ion-icon name="call-outline" style={{fontSize: '24px', color: 'var(--orange-yellow-crayola)'}}></ion-icon></div>
                   <div className="service-content-box">
                     <h4 className="h4 service-item-title">Утас</h4>
-                    <p className="service-item-text">9449-6014</p>
+                    <p className="service-item-text">{ct.phone}</p>
                   </div>
-                </li>
+                </li>}
               </ul>
             </section>
 
@@ -1171,32 +845,19 @@ export default function Home() {
 
                   <select name="service" className="form-input form-select" required data-form-input style={{display:'none'}}>
                     <option value="" disabled defaultValue>Үйлчилгээ сонгох</option>
-                    <optgroup label="── Вебсайт хийх үнэ ──">
-                      <option value="web-simple">Энгийн вебсайт — 200,000–500,000₮</option>
-                      <option value="web-business">Дунд түвшин (Business) — 600,000–2,500,000₮</option>
-                      <option value="web-custom">Хүнд (Custom систем) — 3,000,000–8,000,000₮+</option>
-                    </optgroup>
-                    <optgroup label="── Гар утасны апп ──">
-                      <option value="app-simple">Энгийн апп — 500,000–1,000,000₮</option>
-                      <option value="app-mid">Дунд түвшин апп — 1,500,000–6,000,000₮</option>
-                      <option value="app-large">Том систем апп — 7,000,000–15,000,000₮+</option>
-                      <option value="app-ai">AI chatbot — 3,000,000–4,000,000₮</option>
-                    </optgroup>
-                    <optgroup label="── Систем / Автоматжуулалт ──">
-                      <option value="sys-small">Жижиг автоматжуулалт — 500,000–1,200,000₮</option>
-                      <option value="sys-mid">Дунд систем — 2,000,000–7,000,000₮</option>
-                      <option value="sys-erp">Том систем (ERP) — 8,000,000–20,000,000₮+</option>
-                    </optgroup>
-                    <optgroup label="── Багц ──">
-                      <option value="starter">Starter багц — 1,500,000₮</option>
-                      <option value="basic">Basic багц — 6,000,000₮</option>
-                      <option value="business">Business багц — 15,000,000₮</option>
-                      <option value="premium">Premium багц — 30,000,000₮</option>
-                    </optgroup>
+                    {pricing.map((cat, ci) => (
+                      <optgroup key={ci} label={`── ${cat.name} ──`}>
+                        {(cat.items || []).map((item, ii) => (
+                          <option key={ii} value={item.title}>{item.title} — {item.price}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                    {packages.length > 0 && <optgroup label="── Багц ──">
+                      {packages.map((pkg, pi) => (
+                        <option key={pi} value={pkg.name}>{pkg.name} — {pkg.price}</option>
+                      ))}
+                    </optgroup>}
                     <optgroup label="── Нэмэлт ──">
-                      <option value="hosting">Hosting setup — 160,000–260,000₮</option>
-                      <option value="uiux">UI/UX дизайн — 300,000–1,000,000₮</option>
-                      <option value="bugfix">Bug fix / update — 30,000–80,000₮</option>
                       <option value="other">Бусад</option>
                     </optgroup>
                   </select>
@@ -1208,83 +869,27 @@ export default function Home() {
                       <ion-icon name="chevron-down" className="custom-select-icon"></ion-icon>
                     </button>
                     <div className="custom-select-dropdown" data-custom-select-dropdown>
-                      <div className="custom-select-group-label">Вебсайт хийх үнэ</div>
-                      <div className="custom-select-option" data-value="web-simple">
-                        <ion-icon name="newspaper-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Энгийн вебсайт</span><small>200,000–500,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="web-business">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Дунд түвшин (Business)</span><small>600,000–2,500,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="web-custom">
-                        <ion-icon name="construct-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Хүнд (Custom систем)</span><small>3,000,000–8,000,000₮+</small></div>
-                      </div>
-
-                      <div className="custom-select-group-label">Гар утасны апп</div>
-                      <div className="custom-select-option" data-value="app-simple">
-                        <ion-icon name="phone-portrait-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Энгийн апп</span><small>500,000–1,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="app-mid">
-                        <ion-icon name="apps-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Дунд түвшин апп</span><small>1,500,000–6,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="app-large">
-                        <ion-icon name="server-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Том систем апп</span><small>7,000,000–15,000,000₮+</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="app-ai">
-                        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>AI chatbot</span><small>3,000,000–4,000,000₮</small></div>
-                      </div>
-
-                      <div className="custom-select-group-label">Систем / Автоматжуулалт</div>
-                      <div className="custom-select-option" data-value="sys-small">
-                        <ion-icon name="sync-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Жижиг автоматжуулалт</span><small>500,000–1,200,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="sys-mid">
-                        <ion-icon name="grid-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Дунд систем</span><small>2,000,000–7,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="sys-erp">
-                        <ion-icon name="layers-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Том систем (ERP)</span><small>8,000,000–20,000,000₮+</small></div>
-                      </div>
-
-                      <div className="custom-select-group-label">Багц</div>
-                      <div className="custom-select-option" data-value="starter">
-                        <ion-icon name="leaf-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Starter багц</span><small>1,500,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="basic">
-                        <ion-icon name="diamond-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Basic багц</span><small>6,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="business">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Business багц</span><small>15,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="premium">
-                        <ion-icon name="rocket-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Premium багц</span><small>30,000,000₮</small></div>
-                      </div>
-
+                      {pricing.map((cat, ci) => (
+                        <div key={ci}>
+                          <div className="custom-select-group-label">{cat.name}</div>
+                          {(cat.items || []).map((item, ii) => (
+                            <div key={ii} className="custom-select-option" data-value={item.title}>
+                              <ion-icon name={item.icon || 'ellipse-outline'}></ion-icon>
+                              <div className="custom-select-option-text"><span>{item.title}</span><small>{item.price}</small></div>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                      {packages.length > 0 && <>
+                        <div className="custom-select-group-label">Багц</div>
+                        {packages.map((pkg, pi) => (
+                          <div key={pi} className="custom-select-option" data-value={pkg.name}>
+                            <ion-icon name={pkg.icon || 'cube-outline'}></ion-icon>
+                            <div className="custom-select-option-text"><span>{pkg.name}</span><small>{pkg.price}</small></div>
+                          </div>
+                        ))}
+                      </>}
                       <div className="custom-select-group-label">Нэмэлт</div>
-                      <div className="custom-select-option" data-value="hosting">
-                        <ion-icon name="cloud-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Hosting setup</span><small>160,000–260,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="uiux">
-                        <ion-icon name="color-palette-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>UI/UX дизайн</span><small>300,000–1,000,000₮</small></div>
-                      </div>
-                      <div className="custom-select-option" data-value="bugfix">
-                        <ion-icon name="hammer-outline"></ion-icon>
-                        <div className="custom-select-option-text"><span>Bug fix / update</span><small>30,000–80,000₮</small></div>
-                      </div>
                       <div className="custom-select-option" data-value="other">
                         <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
                         <div className="custom-select-option-text"><span>Бусад</span><small>&nbsp;</small></div>
