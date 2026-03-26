@@ -779,7 +779,7 @@ export default function Home({ siteData }) {
                     <div className="service-content-box">
                       <ul className="pricing-features">
                         {(pkg.features || []).map((f, fi) => (
-                          <li key={fi}><ion-icon name="checkmark-outline" className="feature-icon"></ion-icon> {f}</li>
+                          <li key={fi}><ion-icon name="checkmark-outline" style={{color: 'hsl(208, 96%, 31%)', fontSize: '16px', flexShrink: 0}}></ion-icon> {f}</li>
                         ))}
                       </ul>
                     </div>
