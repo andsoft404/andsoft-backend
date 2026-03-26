@@ -506,50 +506,7 @@ export default function Home({ siteData }) {
       </Head>
 
       <main>
-        {/* DESKTOP HEADER */}
-        <header className="desktop-header">
-          <div className="desktop-header-inner">
-            <figure className="desktop-header-logo">
-              <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
-              <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
-            </figure>
-            <button className="desktop-header-toggle" data-desktop-header-btn>
-              <ion-icon name="chevron-down"></ion-icon>
-            </button>
-          </div>
-          <div className="desktop-header-dropdown" data-desktop-header-dropdown>
-            <ul className="contacts-list">
-              {sb.email && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Имэйл</p>
-                  <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
-                </div>
-              </li>}
-              {sb.phone && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Утас</p>
-                  <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
-                </div>
-              </li>}
-              {sb.address && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Байршил</p>
-                  <address>{sb.address}</address>
-                </div>
-              </li>}
-            </ul>
-            <div className="separator"></div>
-            <ul className="social-list">
-              {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
-              {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
-            </ul>
-          </div>
-        </header>
-
-        {/* SIDEBAR */}
+        {/* SIDEBAR (mobile/tablet) */}
         <aside className="sidebar" data-sidebar>
           <div className="sidebar-info">
             <figure className="avatar-box">
@@ -600,6 +557,50 @@ export default function Home({ siteData }) {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
+          {/* PANEL HEADER (desktop: logo left, nav right) */}
+          <div className="panel-header">
+            <div className="panel-header-left">
+              <figure className="panel-logo">
+                <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
+                <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
+              </figure>
+              <button className="panel-header-toggle" data-desktop-header-btn>
+                <ion-icon name="chevron-down"></ion-icon>
+              </button>
+            </div>
+          </div>
+          {/* PANEL DROPDOWN */}
+          <div className="panel-dropdown" data-desktop-header-dropdown>
+            <ul className="contacts-list">
+              {sb.email && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Имэйл</p>
+                  <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
+                </div>
+              </li>}
+              {sb.phone && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Утас</p>
+                  <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
+                </div>
+              </li>}
+              {sb.address && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Байршил</p>
+                  <address>{sb.address}</address>
+                </div>
+              </li>}
+            </ul>
+            <div className="separator"></div>
+            <ul className="social-list">
+              {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
+              {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
+            </ul>
+          </div>
+
           {/* NAVBAR */}
           <nav className="navbar">
             <ul className="navbar-list">
@@ -621,22 +622,22 @@ export default function Home({ siteData }) {
             </ul>
           </nav>
 
+          {/* Хамтрагч байгууллагууд */}
+          <section className="clients panel-clients">
+            <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
+            <ul className="clients-list has-scrollbar">
+              {partners.map((p, i) => (
+                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+              ))}
+            </ul>
+          </section>
+
           {/* ТАНИЛЦУУЛГА */}
           <article className="about active" data-page="танилцуулга">
             <header><h2 className="h2 article-title" style={{textAlign: 'center'}}>Танилцуулга</h2></header>
 
             <section className="about-text">
               {ab.text ? ab.text.split('\n').filter(p => p.trim()).map((p, i) => <p key={i}>{p}</p>) : <p>Мэдээлэл байхгүй.</p>}
-            </section>
-
-            {/* Хамтрагч байгууллагууд */}
-            <section className="clients">
-              <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
-              <ul className="clients-list has-scrollbar">
-                {partners.map((p, i) => (
-                  <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-                ))}
-              </ul>
             </section>
 
             {/* Үйл ажиллагааны чиглэл */}
