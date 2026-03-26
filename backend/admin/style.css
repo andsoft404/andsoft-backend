@@ -1,4 +1,4 @@
-/* АндСофт Админ Styles */
+﻿/* ÐÐ½Ð´Ð¡Ð¾Ñ„Ñ‚ ÐÐ´Ð¼Ð¸Ð½ Styles */
 :root {
   --admin-bg: #0f1117;
   --sidebar-bg: #161822;
@@ -8,9 +8,9 @@
   --card-border: #252840;
   --text-primary: #e4e6f0;
   --text-secondary: #8b8fa8;
-  --accent: hsl(25, 100%, 58%);
+  --accent: hsl(210, 93%, 43%);
   --accent-hover: hsl(30, 100%, 62%);
-  --accent-subtle: hsla(25, 100%, 58%, 0.1);
+  --accent-subtle: hsla(210, 93%, 43%, 0.1);
   --green: #34d399;
   --blue: #60a5fa;
   --purple: #a78bfa;
@@ -147,7 +147,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.notif-icon.message { background: rgba(251,146,60,0.15); color: var(--accent); }
+.notif-icon.message { background: rgba(30,100,200,0.15); color: var(--accent); }
 .notif-icon.order { background: rgba(167,139,250,0.15); color: var(--purple); }
 .notif-text { flex: 1; font-size: 12px; line-height: 1.4; }
 .notif-time { display: block; font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
@@ -222,7 +222,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
 .stat-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .stat-icon.blue { background: rgba(96,165,250,0.15); } .stat-icon.blue svg { stroke: var(--blue); }
 .stat-icon.green { background: rgba(52,211,153,0.15); } .stat-icon.green svg { stroke: var(--green); }
-.stat-icon.orange { background: rgba(251,146,60,0.15); } .stat-icon.orange svg { stroke: var(--accent); }
+.stat-icon.orange { background: rgba(30,100,200,0.15); } .stat-icon.orange svg { stroke: var(--accent); }
 .stat-icon.purple { background: rgba(167,139,250,0.15); } .stat-icon.purple svg { stroke: var(--purple); }
 .stat-number { display: block; font-size: 24px; font-weight: 700; line-height: 1; }
 .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
@@ -239,7 +239,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
 .dash-recent-item:last-child { border-bottom: none; }
 .dash-recent-item:hover { background: rgba(255,255,255,0.02); }
 .dash-recent-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.dash-recent-icon.msg { background: rgba(251,146,60,0.15); color: var(--accent); }
+.dash-recent-icon.msg { background: rgba(30,100,200,0.15); color: var(--accent); }
 .dash-recent-icon.ord { background: rgba(167,139,250,0.15); color: var(--purple); }
 .dash-recent-body { flex: 1; min-width: 0; }
 .dash-recent-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -314,7 +314,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
 .package-price { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
 .package-features { list-style: none; margin-bottom: 12px; }
 .package-card ul li { font-size: 12px; color: var(--text-secondary); padding: 3px 0; padding-left: 16px; position: relative; }
-.package-card ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-size: 11px; }
+.package-card ul li::before { content: 'âœ“'; position: absolute; left: 0; color: var(--green); font-size: 11px; }
 .package-actions { display: flex; gap: 4px; }
 
 /* PROJECTS GRID */
@@ -385,7 +385,7 @@ body.sidebar-collapsed .nav-item:hover::after { opacity: 1; }
 
 /* USER ROLES */
 .role-badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.role-badge.super { background: rgba(251,146,60,0.15); color: var(--accent); }
+.role-badge.super { background: rgba(30,100,200,0.15); color: var(--accent); }
 .role-badge.view { background: rgba(96,165,250,0.15); color: var(--blue); }
 .status-badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .status-badge.active { background: rgba(52,211,153,0.15); color: var(--green); }
