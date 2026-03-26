@@ -2635,6 +2635,11 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   article {
     min-height: 100%;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
   }
 
 
@@ -2744,6 +2749,11 @@ textarea.form-input::-webkit-resizer { display: none; }
     border-bottom-color: hsl(0, 0%, 85%);
   }
 
+  [data-theme="light"] .main-content {
+    background: hsl(0, 0%, 98%);
+    border-color: hsl(0, 0%, 85%);
+  }
+
 
 
   /**
@@ -2770,6 +2780,11 @@ textarea.form-input::-webkit-resizer { display: none; }
     position: relative;
     width: 100%;
     margin: 0;
+    background: var(--eerie-black-2);
+    border: 1px solid var(--jet);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: var(--shadow-1);
   }
 
 
