@@ -557,6 +557,16 @@ export default function Home({ siteData }) {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
+          {/* Хамтрагч байгууллагууд — хамгийн дээр */}
+          <section className="clients panel-clients">
+            <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
+            <ul className="clients-list has-scrollbar">
+              {partners.map((p, i) => (
+                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+              ))}
+            </ul>
+          </section>
+
           {/* PANEL HEADER (desktop: logo left, nav right) */}
           <div className="panel-header">
             <div className="panel-header-left">
@@ -621,16 +631,6 @@ export default function Home({ siteData }) {
               </button></li>
             </ul>
           </nav>
-
-          {/* Хамтрагч байгууллагууд */}
-          <section className="clients panel-clients">
-            <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
-            <ul className="clients-list has-scrollbar">
-              {partners.map((p, i) => (
-                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-              ))}
-            </ul>
-          </section>
 
           {/* ТАНИЛЦУУЛГА */}
           <article className="about active" data-page="танилцуулга">
