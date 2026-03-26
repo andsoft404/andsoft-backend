@@ -1184,6 +1184,9 @@ main {
   color: var(--white-2);
   transition: transform 0.3s ease;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .accordion-section.active .accordion-icon {

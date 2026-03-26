@@ -747,7 +747,7 @@ export default function Home({ siteData }) {
                 <div className="title-wrapper accordion-header" data-accordion-header>
                   <div className="icon-box"><ion-icon name={cat.icon || 'pricetag-outline'}></ion-icon></div>
                   <h3 className="h3">{ci + 1}. {cat.name}</h3>
-                  <ion-icon name="chevron-down" className="accordion-icon"></ion-icon>
+                  <span className="accordion-icon"><ion-icon name="chevron-down"></ion-icon></span>
                 </div>
                 <ol className="timeline-list accordion-body" data-accordion-body>
                   {(cat.items || []).map((item, ii) => (
