@@ -614,7 +614,6 @@ export default function Home({ siteData }) {
             {/* Хамт олон — Puzzle */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <p className="puzzle-subtitle">Бид нэгдэж чаддаг учраа чанартай бүтээл хийдэг</p>
               <div className="puzzle-grid">
                 {(() => {
                   const len = team.length;
