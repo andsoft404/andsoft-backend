@@ -566,9 +566,9 @@ export default function Home({ siteData }) {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
-          {/* PANEL HEADER (desktop: logo left, nav right) */}
-          <div className="panel-header">
-            <div className="panel-header-left">
+          {/* DESKTOP TOP BAR: logo left + nav right */}
+          <div className="desktop-topbar">
+            <div className="desktop-topbar-left">
               <figure className="panel-logo">
                 <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
                 <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
@@ -577,8 +577,27 @@ export default function Home({ siteData }) {
                 <ion-icon name="chevron-down"></ion-icon>
               </button>
             </div>
+            <nav className="navbar">
+              <ul className="navbar-list">
+                <li className="navbar-item"><button className="navbar-link active" data-nav-link><ion-icon name="home-outline"></ion-icon><span>Танилцуулга</span></button></li>
+                <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="pricetag-outline"></ion-icon><span>Үнэ</span></button></li>
+                <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="cube-outline"></ion-icon><span>Багц</span></button></li>
+                <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="star-outline"></ion-icon><span>Давуу тал</span></button></li>
+                <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="folder-outline"></ion-icon><span>Төсөл</span></button></li>
+                <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="call-outline"></ion-icon><span>Холбоо барих</span></button></li>
+                <li className="navbar-item"><button className="theme-toggle navbar-theme-toggle" onClick={() => {
+                  const html = document.documentElement;
+                  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                  html.setAttribute('data-theme', next);
+                  localStorage.setItem('theme', next);
+                }}>
+                  <ion-icon name="sunny-outline" className="sun-icon"></ion-icon>
+                  <ion-icon name="moon-outline" className="moon-icon"></ion-icon>
+                </button></li>
+              </ul>
+            </nav>
           </div>
-          {/* PANEL DROPDOWN */}
+          {/* DROPDOWN */}
           <div className="panel-dropdown" data-desktop-header-dropdown>
             <ul className="contacts-list">
               {sb.email && <li className="contact-item">
@@ -609,27 +628,6 @@ export default function Home({ siteData }) {
               {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
             </ul>
           </div>
-
-          {/* NAVBAR */}
-          <nav className="navbar">
-            <ul className="navbar-list">
-              <li className="navbar-item"><button className="navbar-link active" data-nav-link><ion-icon name="home-outline"></ion-icon><span>Танилцуулга</span></button></li>
-              <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="pricetag-outline"></ion-icon><span>Үнэ</span></button></li>
-              <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="cube-outline"></ion-icon><span>Багц</span></button></li>
-              <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="star-outline"></ion-icon><span>Давуу тал</span></button></li>
-              <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="folder-outline"></ion-icon><span>Төсөл</span></button></li>
-              <li className="navbar-item"><button className="navbar-link" data-nav-link><ion-icon name="call-outline"></ion-icon><span>Холбоо барих</span></button></li>
-              <li className="navbar-item"><button className="theme-toggle navbar-theme-toggle" onClick={() => {
-                const html = document.documentElement;
-                const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-              }}>
-                <ion-icon name="sunny-outline" className="sun-icon"></ion-icon>
-                <ion-icon name="moon-outline" className="moon-icon"></ion-icon>
-              </button></li>
-            </ul>
-          </nav>
 
           {/* ТАНИЛЦУУЛГА */}
           <article className="about active" data-page="танилцуулга">
