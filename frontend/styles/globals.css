@@ -2701,8 +2701,8 @@ textarea.form-input::-webkit-resizer { display: none; }
     transition: max-height 0.4s ease, padding 0.3s ease;
     padding: 0 20px;
     background: var(--eerie-black-2);
-    border-bottom: 1px solid var(--jet);
-    border-radius: 0 0 14px 14px;
+    border-bottom: 2px solid var(--orange-yellow-crayola);
+    border-radius: 0;
     position: relative;
     z-index: 2;
   }
