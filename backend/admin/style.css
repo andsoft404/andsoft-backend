@@ -1,4 +1,4 @@
-﻿/* ÐÐ½Ð´Ð¡Ð¾Ñ„Ñ‚ ÐÐ´Ð¼Ð¸Ð½ Styles */
+/* ÐÐ½Ð´Ð¡Ð¾Ñ„Ñ‚ ÐÐ´Ð¼Ð¸Ð½ Styles */
 :root {
   --admin-bg: #0f1117;
   --sidebar-bg: #161822;
@@ -8,7 +8,7 @@
   --card-border: #252840;
   --text-primary: #e4e6f0;
   --text-secondary: #8b8fa8;
-  --accent: hsl(191, 62%, 73%);
+  --accent: hsl(208, 96%, 31%);
   --accent-hover: hsl(30, 100%, 62%);
   --accent-subtle: hsla(210, 93%, 43%, 0.1);
   --green: #34d399;

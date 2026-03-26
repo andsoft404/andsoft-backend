@@ -582,7 +582,7 @@ export default function Home({ siteData }) {
               <ul className="service-list">
                 {services.map((s, i) => (
                   <li key={i} className="service-item">
-                    <div className="service-icon-box"><ion-icon name={s.icon || 'code-slash-outline'} style={{fontSize: '36px', color: 'hsl(191, 62%, 73%)'}}></ion-icon></div>
+                    <div className="service-icon-box"><ion-icon name={s.icon || 'code-slash-outline'} style={{fontSize: '36px', color: 'hsl(208, 96%, 31%)'}}></ion-icon></div>
                     <div className="service-content-box">
                       <h4 className="h4 service-item-title">{s.title}</h4>
                       <p className="service-item-text">{s.desc}</p>
@@ -900,14 +900,14 @@ export default function Home({ siteData }) {
             <section className="contact-info-section" style={{marginBottom: '30px'}}>
               <ul className="service-list">
                 {ct.email && <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="mail-outline" style={{fontSize: '24px', color: 'hsl(191, 62%, 73%)'}}></ion-icon></div>
+                  <div className="service-icon-box"><ion-icon name="mail-outline" style={{fontSize: '24px', color: 'hsl(208, 96%, 31%)'}}></ion-icon></div>
                   <div className="service-content-box">
                     <h4 className="h4 service-item-title">Имэйл</h4>
                     <p className="service-item-text">{ct.email}</p>
                   </div>
                 </li>}
                 {ct.phone && <li className="service-item">
-                  <div className="service-icon-box"><ion-icon name="call-outline" style={{fontSize: '24px', color: 'hsl(191, 62%, 73%)'}}></ion-icon></div>
+                  <div className="service-icon-box"><ion-icon name="call-outline" style={{fontSize: '24px', color: 'hsl(208, 96%, 31%)'}}></ion-icon></div>
                   <div className="service-content-box">
                     <h4 className="h4 service-item-title">Утас</h4>
                     <p className="service-item-text">{ct.phone}</p>
