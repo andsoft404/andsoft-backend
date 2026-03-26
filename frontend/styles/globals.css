@@ -2633,7 +2633,10 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .sidebar, article { width: auto; }
 
-  article { min-height: 100%; }
+  article {
+    min-height: 100%;
+    padding-top: 60px;
+  }
 
 
 

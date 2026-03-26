@@ -557,7 +557,6 @@ export default function Home({ siteData }) {
 
         {/* Хамтрагч байгууллагууд — main-content-ээс гадна, хамгийн дээр */}
         <section className="clients panel-clients">
-          <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
           <ul className="clients-list has-scrollbar">
             {partners.map((p, i) => (
               <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
