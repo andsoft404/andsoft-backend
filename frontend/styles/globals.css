@@ -1156,6 +1156,7 @@ main {
 
 .clients-item img {
   width: 100%;
+  max-width: 120px;
   transition: var(--transition-1);
 }
 
@@ -2480,13 +2481,15 @@ textarea.form-input::-webkit-resizer { display: none; }
     left: auto;
     right: 0;
     width: max-content;
-    border-radius: 20px;
+    border-radius: 0 0 0 14px;
     padding: 0;
     box-shadow: var(--shadow-2);
     background: hsla(240, 1%, 17%, 0.75);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid hsla(0, 0%, 100%, 0.08);
+    border: none;
+    border-left: 1px solid hsla(0, 0%, 100%, 0.08);
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.08);
   }
 
   .navbar-list {
@@ -2524,7 +2527,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     background: var(--orange-yellow-crayola);
     padding: 8px 16px;
     width: auto;
-    border-radius: 20px;
+    border-radius: 8px;
   }
 
   .navbar-link.active ion-icon {
@@ -2604,7 +2607,8 @@ textarea.form-input::-webkit-resizer { display: none; }
     background: hsla(0, 0%, 100%, 0.65);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-color: hsla(0, 0%, 0%, 0.08);
+    border-left-color: hsla(0, 0%, 0%, 0.08);
+    border-bottom-color: hsla(0, 0%, 0%, 0.08);
   }
 
 }
