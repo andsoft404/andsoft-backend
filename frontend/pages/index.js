@@ -573,9 +573,6 @@ export default function Home({ siteData }) {
                 <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
                 <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
               </figure>
-              <button className="panel-header-toggle" data-desktop-header-btn>
-                <ion-icon name="chevron-down"></ion-icon>
-              </button>
             </div>
             <nav className="navbar">
               <ul className="navbar-list">
@@ -596,37 +593,6 @@ export default function Home({ siteData }) {
                 </button></li>
               </ul>
             </nav>
-          </div>
-          {/* DROPDOWN */}
-          <div className="panel-dropdown" data-desktop-header-dropdown>
-            <ul className="contacts-list">
-              {sb.email && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Имэйл</p>
-                  <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
-                </div>
-              </li>}
-              {sb.phone && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Утас</p>
-                  <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
-                </div>
-              </li>}
-              {sb.address && <li className="contact-item">
-                <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
-                <div className="contact-info">
-                  <p className="contact-title">Байршил</p>
-                  <address>{sb.address}</address>
-                </div>
-              </li>}
-            </ul>
-            <div className="separator"></div>
-            <ul className="social-list">
-              {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
-              {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
-            </ul>
           </div>
 
           {/* ТАНИЛЦУУЛГА */}
@@ -1043,6 +1009,39 @@ export default function Home({ siteData }) {
           </article>
 
         </div>
+
+        {/* FOOTER */}
+        <footer className="site-footer">
+          <ul className="contacts-list">
+            {sb.email && <li className="contact-item">
+              <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
+              <div className="contact-info">
+                <p className="contact-title">Имэйл</p>
+                <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
+              </div>
+            </li>}
+            {sb.phone && <li className="contact-item">
+              <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
+              <div className="contact-info">
+                <p className="contact-title">Утас</p>
+                <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
+              </div>
+            </li>}
+            {sb.address && <li className="contact-item">
+              <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
+              <div className="contact-info">
+                <p className="contact-title">Байршил</p>
+                <address>{sb.address}</address>
+              </div>
+            </li>}
+          </ul>
+          <div className="separator"></div>
+          <ul className="social-list">
+            {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
+            {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
+          </ul>
+          <p className="footer-copy">&copy; {new Date().getFullYear()} АндСофт. Бүх эрх хуулиар хамгаалагдсан.</p>
+        </footer>
       </main>
     </>
   );

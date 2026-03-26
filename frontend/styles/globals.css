@@ -242,7 +242,7 @@
   display: none;
 }
 
-.panel-dropdown {
+.site-footer {
   display: none;
 }
 
@@ -2696,80 +2696,49 @@ textarea.form-input::-webkit-resizer { display: none; }
     object-fit: contain;
   }
 
-  .panel-header-toggle {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: hsla(240, 1%, 17%, 0.75);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid hsla(0, 0%, 100%, 0.08);
-    border-radius: 50%;
-    color: var(--orange-yellow-crayola);
-    font-size: 16px;
-    cursor: pointer;
-    transition: var(--transition-1);
-  }
-
-  .panel-header-toggle:hover {
-    background: hsla(240, 1%, 17%, 0.9);
-  }
-
-  .panel-header-toggle.active {
-    transform: rotate(180deg);
-  }
-
-  .panel-dropdown {
-    display: block;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.3s ease;
-    padding: 0 20px;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    position: relative;
-    z-index: 2;
-  }
-
-  .panel-dropdown.active {
-    max-height: 400px;
-    padding: 16px 20px;
-  }
-
-  .panel-dropdown .contacts-list {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .panel-dropdown .contact-item {
-    flex: 1;
-    min-width: 180px;
-  }
-
-  .panel-dropdown .separator {
-    margin: 12px 0;
-  }
-
-  .panel-dropdown .social-list {
-    justify-content: flex-start;
-  }
-
   .panel-clients {
     display: block;
     padding: 15px 20px 5px;
   }
 
-  [data-theme="light"] .panel-header-left {
-    background: transparent;
+  /**
+   * SITE FOOTER
+   */
+
+  .site-footer {
+    display: block;
+    padding: 24px 20px;
+    margin-top: 20px;
+    border-top: 1px solid var(--jet);
   }
 
-  [data-theme="light"] .panel-dropdown {
-    background: transparent;
-    border: none;
+  .site-footer .contacts-list {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .site-footer .contact-item {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .site-footer .separator {
+    margin: 16px 0;
+  }
+
+  .site-footer .social-list {
+    justify-content: flex-start;
+  }
+
+  .site-footer .footer-copy {
+    margin-top: 16px;
+    font-size: var(--fs-8);
+    color: var(--light-gray);
+    text-align: center;
   }
 
   [data-theme="light"] .main-content {
