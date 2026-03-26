@@ -2700,8 +2700,8 @@ textarea.form-input::-webkit-resizer { display: none; }
     overflow: hidden;
     transition: max-height 0.4s ease, padding 0.3s ease;
     padding: 0 20px;
-    background: var(--eerie-black-2);
-    border-bottom: 2px solid var(--orange-yellow-crayola);
+    background: transparent;
+    border: none;
     border-radius: 0;
     position: relative;
     z-index: 2;
@@ -2741,8 +2741,8 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   [data-theme="light"] .panel-dropdown {
-    background: hsl(0, 0%, 96%);
-    border-bottom-color: hsl(0, 0%, 85%);
+    background: transparent;
+    border: none;
   }
 
   [data-theme="light"] .main-content {
