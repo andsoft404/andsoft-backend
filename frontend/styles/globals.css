@@ -2476,11 +2476,10 @@ textarea.form-input::-webkit-resizer { display: none; }
     left: auto;
     right: 0;
     width: max-content;
-    border-radius: 0 20px;
+    border-radius: 0;
     padding: 0;
     box-shadow: none;
-    background: hsla(240, 1%, 17%, 0.85);
-    backdrop-filter: blur(10px);
+    background: transparent;
   }
 
   .navbar-list {
@@ -2590,7 +2589,7 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   [data-theme="light"] .navbar {
-    background: hsla(0, 0%, 98%, 0.85);
+    background: transparent;
   }
 
 }
@@ -2660,9 +2659,6 @@ textarea.form-input::-webkit-resizer { display: none; }
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    background: hsla(240, 1%, 17%, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 20px 0;
   }
 
   .panel-logo {
@@ -2741,7 +2737,7 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   [data-theme="light"] .panel-header-left {
-    background: hsla(0, 0%, 98%, 0.85);
+    background: transparent;
   }
 
   [data-theme="light"] .panel-dropdown {

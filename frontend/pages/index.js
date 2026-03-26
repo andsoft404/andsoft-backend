@@ -555,17 +555,17 @@ export default function Home({ siteData }) {
           </div>
         </aside>
 
-        {/* Хамтрагч байгууллагууд — main-content-ээс гадна, хамгийн дээр */}
-        <section className="clients panel-clients">
-          <ul className="clients-list has-scrollbar">
-            {partners.map((p, i) => (
-              <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-            ))}
-          </ul>
-        </section>
-
         {/* MAIN CONTENT */}
         <div className="main-content">
+          {/* Хамтрагч байгууллагууд */}
+          <section className="clients panel-clients">
+            <ul className="clients-list has-scrollbar">
+              {partners.map((p, i) => (
+                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+              ))}
+            </ul>
+          </section>
+
           {/* PANEL HEADER (desktop: logo left, nav right) */}
           <div className="panel-header">
             <div className="panel-header-left">
