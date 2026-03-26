@@ -2635,7 +2635,6 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   article {
     min-height: 100%;
-    padding-top: 60px;
   }
 
 
@@ -2646,9 +2645,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .panel-header {
     display: flex;
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     z-index: 2;
     padding: 0;
   }
@@ -2705,6 +2702,8 @@ textarea.form-input::-webkit-resizer { display: none; }
     background: var(--eerie-black-2);
     border-bottom: 1px solid var(--jet);
     border-radius: 0 0 14px 14px;
+    position: relative;
+    z-index: 2;
   }
 
   .panel-dropdown.active {
