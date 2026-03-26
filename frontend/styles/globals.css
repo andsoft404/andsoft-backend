@@ -2677,11 +2677,6 @@ textarea.form-input::-webkit-resizer { display: none; }
     gap: 10px;
   }
 
-  .desktop-topbar .navbar {
-    position: static;
-    width: auto;
-  }
-
   .panel-header-left {
     display: none;
   }
