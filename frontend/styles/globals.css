@@ -688,6 +688,7 @@ main {
 
 .navbar-link.active span {
   display: block;
+  color: var(--white-1);
 }
 
 .navbar-link.active ion-icon {
