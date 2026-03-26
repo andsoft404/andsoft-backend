@@ -42,6 +42,16 @@ export default function Home({ siteData }) {
       sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
     }
 
+    // desktop header dropdown toggle
+    const desktopHeaderBtn = document.querySelector("[data-desktop-header-btn]");
+    const desktopHeaderDropdown = document.querySelector("[data-desktop-header-dropdown]");
+    if (desktopHeaderBtn && desktopHeaderDropdown) {
+      desktopHeaderBtn.addEventListener("click", function () {
+        desktopHeaderDropdown.classList.toggle("active");
+        this.classList.toggle("active");
+      });
+    }
+
     // testimonials modal
     const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
     const modalContainer = document.querySelector("[data-modal-container]");
@@ -496,6 +506,49 @@ export default function Home({ siteData }) {
       </Head>
 
       <main>
+        {/* DESKTOP HEADER */}
+        <header className="desktop-header">
+          <div className="desktop-header-inner">
+            <figure className="desktop-header-logo">
+              <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
+              <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
+            </figure>
+            <button className="desktop-header-toggle" data-desktop-header-btn>
+              <ion-icon name="chevron-down"></ion-icon>
+            </button>
+          </div>
+          <div className="desktop-header-dropdown" data-desktop-header-dropdown>
+            <ul className="contacts-list">
+              {sb.email && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Имэйл</p>
+                  <a href={`mailto:${sb.email}`} className="contact-link">{sb.email}</a>
+                </div>
+              </li>}
+              {sb.phone && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="phone-portrait-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Утас</p>
+                  <a href={`tel:${sb.phone}`} className="contact-link">{sb.phone}</a>
+                </div>
+              </li>}
+              {sb.address && <li className="contact-item">
+                <div className="icon-box"><ion-icon name="location-outline"></ion-icon></div>
+                <div className="contact-info">
+                  <p className="contact-title">Байршил</p>
+                  <address>{sb.address}</address>
+                </div>
+              </li>}
+            </ul>
+            <div className="separator"></div>
+            <ul className="social-list">
+              {sb.facebook && <li className="social-item"><a href={sb.facebook} className="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>}
+              {sb.instagram && <li className="social-item"><a href={sb.instagram} className="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>}
+            </ul>
+          </div>
+        </header>
+
         {/* SIDEBAR */}
         <aside className="sidebar" data-sidebar>
           <div className="sidebar-info">
@@ -570,15 +623,25 @@ export default function Home({ siteData }) {
 
           {/* ТАНИЛЦУУЛГА */}
           <article className="about active" data-page="танилцуулга">
-            <header><h2 className="h2 article-title">Танилцуулга</h2></header>
+            <header><h2 className="h2 article-title" style={{textAlign: 'center'}}>Танилцуулга</h2></header>
 
             <section className="about-text">
               {ab.text ? ab.text.split('\n').filter(p => p.trim()).map((p, i) => <p key={i}>{p}</p>) : <p>Мэдээлэл байхгүй.</p>}
             </section>
 
+            {/* Хамтрагч байгууллагууд */}
+            <section className="clients">
+              <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
+              <ul className="clients-list has-scrollbar">
+                {partners.map((p, i) => (
+                  <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+                ))}
+              </ul>
+            </section>
+
             {/* Үйл ажиллагааны чиглэл */}
             <section className="service">
-              <h3 className="h3 service-title">Үйл ажиллагааны чиглэл</h3>
+              <h3 className="h3 service-title" style={{textAlign: 'center'}}>Үйл ажиллагааны чиглэл</h3>
               <ul className="service-list">
                 {services.map((s, i) => (
                   <li key={i} className="service-item">
@@ -708,16 +771,6 @@ export default function Home({ siteData }) {
                   });
                 })()}
               </div>
-            </section>
-
-            {/* Хамтрагч байгууллагууд */}
-            <section className="clients">
-              <h3 className="h3 clients-title">Хамтрагч байгууллагууд</h3>
-              <ul className="clients-list has-scrollbar">
-                {partners.map((p, i) => (
-                  <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-                ))}
-              </ul>
             </section>
 
             {/* Testimonials Modal */}

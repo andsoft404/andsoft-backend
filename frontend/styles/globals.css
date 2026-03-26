@@ -230,6 +230,14 @@
   color: #fff;
 }
 
+/*-----------------------------------*\
+  #DESKTOP HEADER
+\*-----------------------------------*/
+
+.desktop-header {
+  display: none;
+}
+
 /* Theme toggle button */
 .theme-toggle {
   width: 34px;
@@ -2474,7 +2482,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .navbar-link {
     font-weight: var(--fw-500);
-    color: hsl(210, 93%, 43%);
+    color: var(--white-2);
     font-size: 18px;
     padding: 8px;
     background: var(--onyx);
@@ -2488,6 +2496,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     display: block;
     font-size: 18px;
     flex-shrink: 0;
+    color: hsl(208, 96%, 31%);
   }
 
   .navbar-link span {
@@ -2496,8 +2505,8 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   .navbar-link.active {
-    color: var(--orange-yellow-crayola);
-    background: hsla(210, 93%, 43%, 0.12);
+    color: var(--white-1);
+    background: hsla(0, 0%, 100%, 0.1);
     padding: 8px 16px;
     width: auto;
     border-radius: 12px;
@@ -2505,11 +2514,12 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .navbar-link.active span {
     display: block;
+    color: var(--white-1);
   }
 
   .navbar-link:hover,
   .navbar-link:focus {
-    color: hsl(210, 93%, 60%);
+    color: var(--white-1);
   }
 
   /* Align article title next to navbar */
@@ -2620,21 +2630,122 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
+   * DESKTOP HEADER
+   */
+
+  .desktop-header {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--eerie-black-1);
+    border-bottom: 1px solid var(--jet);
+    padding: 12px 30px;
+  }
+
+  .desktop-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .desktop-header-logo {
+    margin: 0;
+  }
+
+  .desktop-header-logo img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .desktop-header-toggle {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--onyx);
+    border: 1px solid var(--jet);
+    border-radius: 50%;
+    color: var(--white-2);
+    font-size: 18px;
+    cursor: pointer;
+    transition: var(--transition-1);
+  }
+
+  .desktop-header-toggle:hover {
+    background: var(--jet);
+  }
+
+  .desktop-header-toggle.active {
+    transform: rotate(180deg);
+  }
+
+  .desktop-header-dropdown {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+
+  .desktop-header-dropdown.active {
+    max-height: 400px;
+    padding: 20px 30px;
+  }
+
+  .desktop-header-dropdown .contacts-list {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .desktop-header-dropdown .contact-item {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .desktop-header-dropdown .separator {
+    margin: 15px 0;
+  }
+
+  .desktop-header-dropdown .social-list {
+    justify-content: flex-start;
+  }
+
+  [data-theme="light"] .desktop-header {
+    background: hsl(0, 0%, 98%);
+    border-bottom-color: hsl(0, 0%, 85%);
+  }
+
+
+
+  /**
+   * SIDEBAR - HIDDEN ON DESKTOP
+   */
+
+  .sidebar {
+    display: none;
+  }
+
+
+
+  /**
    * MAIN
    */
 
   main {
     max-width: 1200px;
     margin-inline: auto;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    gap: 25px;
+    display: block;
   }
 
   .main-content {
-    min-width: 75%;
-    width: 75%;
+    width: 100%;
     margin: 0;
   }
 
@@ -2643,57 +2754,6 @@ textarea.form-input::-webkit-resizer { display: none; }
   /**
    * SIDEBAR
    */
-
-  .sidebar {
-    position: sticky;
-    top: 60px;
-    max-height: max-content;
-    height: 100%;
-    margin-bottom: 0;
-    padding-top: 60px;
-    z-index: 1;
-  }
-
-  .sidebar-info { flex-direction: column; }
-
-  .avatar-box img { width: 180px; }
-
-  .info-content .name {
-    white-space: normal;
-    text-align: center;
-    word-break: keep-all;
-  }
-
-  .info-content .title { margin: auto; }
-
-  .info_more-btn { display: none; }
-
-  .sidebar-info_more {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .contacts-list { grid-template-columns: 1fr; }
-
-  .contact-info :is(.contact-link) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .contact-info :is(.contact-link, time, address) {
-    --fs-7: 14px;
-    font-weight: var(--fw-300);
-  }
-
-  .separator:last-of-type {
-    margin: 15px 0;
-    opacity: 0;
-  }
-
-  .social-list { justify-content: center; }
-
-
 
   /**
 	 * RESUME
