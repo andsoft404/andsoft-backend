@@ -688,15 +688,6 @@ export default function Home({ siteData }) {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
-          {/* DESKTOP TOP BAR: logo left + nav right */}
-          <div className="desktop-topbar">
-            <div className="desktop-topbar-left">
-              <figure className="panel-logo">
-                <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
-                <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
-              </figure>
-            </div>
-          </div>
 
           {/* NAVBAR — mobile: fixed bottom, desktop: inside topbar */}
           <nav className="navbar">
