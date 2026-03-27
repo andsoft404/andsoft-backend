@@ -672,22 +672,17 @@ export default function Home({ siteData }) {
           </div>
         </aside>
 
-        {/* Хамтрагч байгууллагууд — гадна, хамгийн дээр */}
-        <section className="clients panel-clients">
-          <div className="clients-marquee">
-            <ul className="clients-list has-scrollbar">
-              {partners.map((p, i) => (
-                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-              ))}
-              {partners.map((p, i) => (
-                <li key={`dup-${i}`} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
         {/* MAIN CONTENT */}
         <div className="main-content">
+          {/* DESKTOP TOP BAR: logo left */}
+          <div className="desktop-topbar">
+            <div className="desktop-topbar-left">
+              <figure className="panel-logo">
+                <img src={sb.logo || "/images/AndSoft-Logo.png"} alt="АндСофт" className="logo-dark" />
+                <img src={sb.logoLight || "/images/AndSoft-Logo-Light.png"} alt="АндСофт" className="logo-light" />
+              </figure>
+            </div>
+          </div>
 
           {/* NAVBAR — mobile: fixed bottom, desktop: inside topbar */}
           <nav className="navbar">

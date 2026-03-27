@@ -1176,8 +1176,7 @@ main {
   width: 100px;
   height: 100px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.25;
+  opacity: 0.5;
   transition: opacity 0.3s;
 }
 
@@ -2775,11 +2774,6 @@ textarea.form-input::-webkit-resizer { display: none; }
     height: 36px;
     width: auto;
     object-fit: contain;
-  }
-
-  .panel-clients {
-    display: block;
-    padding: 15px 20px 5px;
   }
 
   .hero-banner {
