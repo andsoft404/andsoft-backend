@@ -243,7 +243,22 @@
 }
 
 .site-footer {
+  display: block;
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.site-footer .contacts-list,
+.site-footer .separator,
+.site-footer .social-list {
   display: none;
+}
+
+.site-footer .footer-copy {
+  font-size: var(--fs-8);
+  color: var(--light-gray);
+  text-align: center;
+  margin: 0;
 }
 
 .panel-clients {
@@ -1161,7 +1176,7 @@ main {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
   overflow: hidden;
 }
 
@@ -1170,6 +1185,8 @@ main {
   right: -120px;
   animation: floatLogo 12s linear infinite;
   opacity: 0;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .hero-float-logo img {
@@ -2813,10 +2830,12 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   .site-footer .separator {
+    display: block;
     margin: 16px 0;
   }
 
   .site-footer .social-list {
+    display: flex;
     justify-content: flex-start;
   }
 

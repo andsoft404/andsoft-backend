@@ -710,9 +710,9 @@ export default function Home({ siteData }) {
             <canvas ref={canvasRef} className="hero-banner-canvas"></canvas>
             <div className="hero-banner-floats">
               {partners.map((p, i) => (
-                <div key={i} className="hero-float-logo" style={{ animationDelay: (i * 2.5) + 's', top: ((i * 37 + 13) % 80) + '%' }}>
+                <a key={i} href={p.url || '#'} target="_blank" rel="noopener noreferrer" className="hero-float-logo" style={{ animationDelay: (i * 2.5) + 's', top: ((i * 37 + 13) % 80) + '%' }}>
                   <img src={p.logo || '/images/partner.png'} alt={p.name} />
-                </div>
+                </a>
               ))}
             </div>
           </div>
