@@ -719,12 +719,15 @@ export default function Home({ siteData }) {
             </ul>
           </nav>
 
-          {/* HERO BANNER — particle network */}
+          {/* HERO BANNER — particle network + floating logos */}
           <div className="hero-banner">
             <canvas ref={canvasRef} className="hero-banner-canvas"></canvas>
-            <div className="hero-banner-content">
-              <h1 className="hero-banner-title">АндСофт Глобал Партнэр</h1>
-              <p className="hero-banner-subtitle">Мэдээллийн технологийн шийдэл</p>
+            <div className="hero-banner-floats">
+              {partners.map((p, i) => (
+                <div key={i} className="hero-float-logo" style={{ animationDelay: (i * 2.5) + 's', top: ((i * 37 + 13) % 80) + '%' }}>
+                  <img src={p.logo || '/images/partner.png'} alt={p.name} />
+                </div>
+              ))}
             </div>
           </div>
 
