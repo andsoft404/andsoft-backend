@@ -1145,15 +1145,13 @@ main {
 
 .clients-list {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 15px;
-  margin: 0 -15px;
-  padding: 25px;
-  padding-bottom: 25px;
-  overflow: hidden;
-  overscroll-behavior-inline: contain;
-  animation: marquee 20s linear infinite;
+  align-items: center;
+  gap: 30px;
+  padding: 15px 0;
+  margin: 0;
+  list-style: none;
+  width: max-content;
+  animation: marquee 25s linear infinite;
 }
 
 .clients-list:hover {
@@ -1166,12 +1164,14 @@ main {
 }
 
 .clients-item {
-  min-width: 50%;
+  flex-shrink: 0;
 }
 
 .clients-item img {
-  width: 100%;
-  max-width: 120px;
+  width: 100px;
+  max-width: 100px;
+  height: auto;
+  object-fit: contain;
   transition: var(--transition-1);
 }
 
