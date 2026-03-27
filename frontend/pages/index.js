@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Head from 'next/head';
 
 export async function getServerSideProps() {
@@ -25,6 +25,7 @@ export default function Home({ siteData }) {
   const packages = siteData.packages || [];
   const advantages = siteData.advantages || [];
   const projects = siteData.projects || [];
+  const canvasRef = useRef(null);
   useEffect(() => {
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -493,8 +494,124 @@ export default function Home({ siteData }) {
       }
     }
 
+    // Particle network banner
+    const canvas = canvasRef.current;
+    let bannerAnimId = null;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      const parent = canvas.parentElement;
+      let w = parent.offsetWidth;
+      let h = parent.offsetHeight;
+      canvas.width = w;
+      canvas.height = h;
+
+      const PARTICLE_COUNT = 80;
+      const CONNECTION_DIST = 150;
+      const MOUSE_DIST = 200;
+      const mouse = { x: -9999, y: -9999 };
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+          this.vx = (Math.random() - 0.5) * 0.6;
+          this.vy = (Math.random() - 0.5) * 0.6;
+          this.r = Math.random() * 2 + 1;
+        }
+        update() {
+          // mouse repel
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_DIST && dist > 0) {
+            const force = (MOUSE_DIST - dist) / MOUSE_DIST * 0.02;
+            this.vx += dx / dist * force;
+            this.vy += dy / dist * force;
+          }
+          this.x += this.vx;
+          this.y += this.vy;
+          // damping
+          this.vx *= 0.999;
+          this.vy *= 0.999;
+          if (this.x < 0) { this.x = 0; this.vx *= -1; }
+          if (this.x > w) { this.x = w; this.vx *= -1; }
+          if (this.y < 0) { this.y = 0; this.vy *= -1; }
+          if (this.y > h) { this.y = h; this.vy *= -1; }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 180, 255, 0.8)';
+          ctx.fill();
+        }
+      }
+
+      const particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+      function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CONNECTION_DIST) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = 'rgba(0, 180, 255,' + (1 - dist / CONNECTION_DIST) * 0.4 + ')';
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+          // lines to mouse
+          const dx = particles[i].x - mouse.x;
+          const dy = particles[i].y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_DIST) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = 'rgba(0, 210, 255,' + (1 - dist / MOUSE_DIST) * 0.6 + ')';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+        }
+        drawLines();
+        bannerAnimId = requestAnimationFrame(animate);
+      }
+      animate();
+
+      function onMouseMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      }
+      function onMouseLeave() { mouse.x = -9999; mouse.y = -9999; }
+      canvas.addEventListener('mousemove', onMouseMove);
+      canvas.addEventListener('mouseleave', onMouseLeave);
+
+      function onResize() {
+        w = parent.offsetWidth;
+        h = parent.offsetHeight;
+        canvas.width = w;
+        canvas.height = h;
+      }
+      window.addEventListener('resize', onResize);
+    }
+
     return () => {
       autoScrollIntervals.forEach(id => clearInterval(id));
+      if (bannerAnimId) cancelAnimationFrame(bannerAnimId);
     };
   }, []);
 
@@ -601,6 +718,15 @@ export default function Home({ siteData }) {
               </button></li>
             </ul>
           </nav>
+
+          {/* HERO BANNER — particle network */}
+          <div className="hero-banner">
+            <canvas ref={canvasRef} className="hero-banner-canvas"></canvas>
+            <div className="hero-banner-content">
+              <h1 className="hero-banner-title">АндСофт Глобал Партнэр</h1>
+              <p className="hero-banner-subtitle">Мэдээллийн технологийн шийдэл</p>
+            </div>
+          </div>
 
           {/* ТАНИЛЦУУЛГА */}
           <article className="about active" data-page="танилцуулга">
