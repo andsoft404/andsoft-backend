@@ -557,11 +557,16 @@ export default function Home({ siteData }) {
 
         {/* Хамтрагч байгууллагууд — гадна, хамгийн дээр */}
         <section className="clients panel-clients">
-          <ul className="clients-list has-scrollbar">
-            {partners.map((p, i) => (
-              <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
-            ))}
-          </ul>
+          <div className="clients-marquee">
+            <ul className="clients-list has-scrollbar">
+              {partners.map((p, i) => (
+                <li key={i} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+              ))}
+              {partners.map((p, i) => (
+                <li key={`dup-${i}`} className="clients-item"><a href={p.url || '#'}><img src={p.logo || '/images/partner.png'} alt={p.name} /></a></li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         {/* MAIN CONTENT */}

@@ -1138,6 +1138,11 @@ main {
 
 .clients { margin-bottom: 15px; }
 
+.clients-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
 .clients-list {
   display: flex;
   justify-content: flex-start;
@@ -1146,8 +1151,18 @@ main {
   margin: 0 -15px;
   padding: 25px;
   padding-bottom: 25px;
-  overflow-x: auto;
+  overflow: hidden;
   overscroll-behavior-inline: contain;
+  animation: marquee 20s linear infinite;
+}
+
+.clients-list:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .clients-item {
@@ -2481,7 +2496,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     left: auto;
     right: 0;
     width: max-content;
-    border-radius: 0 0 0 14px;
+    border-radius: 0 20px 0 14px;
     padding: 0;
     box-shadow: var(--shadow-2);
     background: hsla(240, 1%, 17%, 0.75);
