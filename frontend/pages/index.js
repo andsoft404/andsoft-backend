@@ -27,6 +27,7 @@ export default function Home({ siteData }) {
   const projects = siteData.projects || [];
   const canvasRef = useRef(null);
   const bgCanvasRef = useRef(null);
+  const holoGridRef = useRef(null);
   useEffect(() => {
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -762,10 +763,70 @@ export default function Home({ siteData }) {
       window.addEventListener('resize', bgResize);
     }
 
+    // ─── Holo Grid Carousel: auto-scroll + drag ───
+    const holoGrid = holoGridRef.current;
+    let holoAutoInterval = null;
+    if (holoGrid) {
+      // Auto-scroll every 3 seconds
+      holoAutoInterval = setInterval(() => {
+        if (holoGrid.matches(':hover')) return;
+        const maxScroll = holoGrid.scrollWidth - holoGrid.clientWidth;
+        if (holoGrid.scrollLeft >= maxScroll - 2) {
+          holoGrid.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          holoGrid.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }, 3000);
+
+      // Drag to scroll
+      let isDragging = false;
+      let startX = 0;
+      let scrollStart = 0;
+
+      const onMouseDown = (e) => {
+        isDragging = true;
+        startX = e.pageX - holoGrid.offsetLeft;
+        scrollStart = holoGrid.scrollLeft;
+        holoGrid.classList.add('is-dragging');
+      };
+      const onMouseMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - holoGrid.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        holoGrid.scrollLeft = scrollStart - walk;
+      };
+      const onMouseUp = () => {
+        isDragging = false;
+        holoGrid.classList.remove('is-dragging');
+      };
+      const onTouchStart = (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX - holoGrid.offsetLeft;
+        scrollStart = holoGrid.scrollLeft;
+      };
+      const onTouchMove = (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX - holoGrid.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        holoGrid.scrollLeft = scrollStart - walk;
+      };
+      const onTouchEnd = () => { isDragging = false; };
+
+      holoGrid.addEventListener('mousedown', onMouseDown);
+      holoGrid.addEventListener('mousemove', onMouseMove);
+      holoGrid.addEventListener('mouseup', onMouseUp);
+      holoGrid.addEventListener('mouseleave', onMouseUp);
+      holoGrid.addEventListener('touchstart', onTouchStart, { passive: true });
+      holoGrid.addEventListener('touchmove', onTouchMove, { passive: true });
+      holoGrid.addEventListener('touchend', onTouchEnd);
+    }
+
     return () => {
       autoScrollIntervals.forEach(id => clearInterval(id));
       if (bannerAnimId) cancelAnimationFrame(bannerAnimId);
       if (bgAnimId) cancelAnimationFrame(bgAnimId);
+      if (holoAutoInterval) clearInterval(holoAutoInterval);
     };
   }, []);
 
@@ -918,13 +979,12 @@ export default function Home({ siteData }) {
             {/* Хамт олон — Holographic Pedestal */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <div className="holo-grid">
+              <div className="holo-grid" ref={holoGridRef}>
                 {team.map((mbr, i) => (
                   <div key={i} className="holo-card" data-testimonials-item>
                     {/* Info label - left side */}
                     <div className="holo-label">
                       <div className="holo-label-name">{mbr.role}</div>
-                      <div className="holo-label-title"><ion-icon name="location-outline" style={{fontSize:'11px'}}></ion-icon> {mbr.desc ? mbr.desc.substring(0, 40) + (mbr.desc.length > 40 ? '...' : '') : ''}</div>
                       <div className="holo-label-line"></div>
                       <div className="holo-label-dot"></div>
                     </div>
