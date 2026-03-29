@@ -938,10 +938,56 @@ export default function Home({ siteData }) {
                       <div className="holo-avatar">
                         <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} data-testimonials-avatar />
                       </div>
-                      {/* Holographic body */}
-                      <div className="holo-body">
-                        <div className="holo-body-inner"></div>
-                        <div className="holo-body-scanline"></div>
+                      {/* 3D Holographic human body */}
+                      <div className="holo-body-3d">
+                        <svg className="holo-body-svg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+                          <defs>
+                            <linearGradient id={`holoGrad${i}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="rgba(0,200,255,0.4)" />
+                              <stop offset="50%" stopColor="rgba(0,150,255,0.15)" />
+                              <stop offset="100%" stopColor="rgba(0,200,255,0.35)" />
+                            </linearGradient>
+                            <filter id={`holoGlow${i}`}>
+                              <feGaussianBlur stdDeviation="2" result="blur" />
+                              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                            </filter>
+                          </defs>
+                          {/* Neck */}
+                          <path d="M88,5 L112,5 L110,25 L90,25 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Shoulders */}
+                          <path d="M90,25 L110,25 L130,40 L140,50 L60,50 L70,40 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Torso */}
+                          <path d="M65,50 L135,50 L130,140 L70,140 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Left arm */}
+                          <path d="M60,50 L40,55 L30,120 L38,145 L50,145 L55,125 L58,85 L65,50" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Right arm */}
+                          <path d="M140,50 L160,55 L170,120 L162,145 L150,145 L145,125 L142,85 L135,50" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Left hand */}
+                          <path d="M38,145 L34,158 L42,160 L50,145 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.25)" strokeWidth="0.5" />
+                          {/* Right hand */}
+                          <path d="M162,145 L166,158 L158,160 L150,145 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.25)" strokeWidth="0.5" />
+                          {/* Belt/waist */}
+                          <rect x="68" y="136" width="64" height="8" rx="2" fill="rgba(0,180,255,0.12)" stroke="rgba(0,200,255,0.35)" strokeWidth="0.8" />
+                          {/* Left leg */}
+                          <path d="M72,144 L96,144 L92,230 L85,260 L68,260 L72,230 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Right leg */}
+                          <path d="M104,144 L128,144 L128,230 L132,260 L115,260 L108,230 Z" fill={`url(#holoGrad${i})`} stroke="rgba(0,200,255,0.3)" strokeWidth="0.5" />
+                          {/* Left boot */}
+                          <path d="M62,258 L86,258 L88,275 L86,280 L58,280 L56,275 Z" fill="rgba(0,180,255,0.15)" stroke="rgba(0,200,255,0.35)" strokeWidth="0.8" />
+                          {/* Right boot */}
+                          <path d="M114,258 L138,258 L142,275 L140,280 L112,280 L114,275 Z" fill="rgba(0,180,255,0.15)" stroke="rgba(0,200,255,0.35)" strokeWidth="0.8" />
+                          {/* Wireframe horizontal lines */}
+                          {[65, 80, 95, 110, 125, 155, 175, 195, 215, 235].map((ly, li) => (
+                            <line key={`h${li}`} x1="30" y1={ly} x2="170" y2={ly} stroke="rgba(0,200,255,0.06)" strokeWidth="0.5" />
+                          ))}
+                          {/* Wireframe vertical lines */}
+                          {[50, 70, 85, 100, 115, 130, 150].map((lx, li) => (
+                            <line key={`v${li}`} x1={lx} y1="5" x2={lx} y2="280" stroke="rgba(0,200,255,0.06)" strokeWidth="0.5" />
+                          ))}
+                          {/* Glow outline */}
+                          <path className="holo-body-outline" d="M88,5 L112,5 L110,25 L130,40 L140,50 L160,55 L170,120 L162,145 L166,158 L158,160 L150,145 L145,125 L142,85 L135,50 L130,140 L128,144 L128,230 L132,260 L142,275 L140,280 L112,280 L114,275 L114,258 L104,144 L96,144 L92,230 L85,260 L86,280 L58,280 L56,275 L62,258 L68,260 L72,230 L72,144 L70,140 L65,50 L58,85 L55,125 L50,145 L42,160 L34,158 L38,145 L30,120 L40,55 L60,50 L70,40 L90,25 Z" fill="none" stroke="rgba(0,200,255,0.5)" strokeWidth="1" filter={`url(#holoGlow${i})`} />
+                        </svg>
+                        <div className="holo-body-3d-scanline"></div>
                         {/* Corner brackets */}
                         <div className="holo-bracket holo-bracket-tl"></div>
                         <div className="holo-bracket holo-bracket-tr"></div>
