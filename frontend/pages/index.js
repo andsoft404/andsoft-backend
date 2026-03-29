@@ -610,6 +610,36 @@ export default function Home({ siteData }) {
       window.addEventListener('resize', onResize);
     }
 
+    // 3D tilt cards
+    const tiltCards = document.querySelectorAll('[data-tilt]');
+    tiltCards.forEach(function(card) {
+      const inner = card.querySelector('.team-3d-card-inner');
+      const glowEl = card.querySelector('.team-3d-glow');
+      if (!inner) return;
+
+      card.addEventListener('mousemove', function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / centerY * -15;
+        const rotateY = (x - centerX) / centerX * 15;
+
+        inner.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.05, 1.05, 1.05)';
+
+        if (glowEl) {
+          glowEl.style.opacity = '1';
+          glowEl.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(0,150,255,0.4) 0%, transparent 60%)';
+        }
+      });
+
+      card.addEventListener('mouseleave', function() {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        if (glowEl) { glowEl.style.opacity = '0'; }
+      });
+    });
+
     // Background particle network
     const bgCanvas = bgCanvasRef.current;
     let bgAnimId = null;
@@ -915,102 +945,37 @@ export default function Home({ siteData }) {
               </div>
             </section>
 
-            {/* Хамт олон — Puzzle */}
+            {/* Хамт олон — 3D Holographic Cards */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <div className="puzzle-grid">
-                {(() => {
-                  const len = team.length;
-                  if (!len) return null;
-                  const cols = len <= 2 ? len : len <= 3 ? 3 : len <= 6 ? 3 : 4;
-                  /* Generate puzzle clip-path polygon for each piece.
-                     Each edge can be: flat (0), tab outward (1), blank inward (-1).
-                     Neighbours must interlock: one tab, one blank. */
-                  const buildPoly = (eT, eR, eB, eL) => {
-                    const pts = [];
-                    const N = 16; // smoothness of curves
-                    const p = (x, y) => pts.push(x.toFixed(2) + '% ' + y.toFixed(2) + '%');
-                    // Tab parameters (in %)
-                    const depth = 10;  // how far tab protrudes
-                    const neckW = 6;   // neck half-width
-                    const headW = 8;   // head half-width (> neckW for the round part)
-                    // Top edge: left to right
-                    p(0, 0);
-                    if (eT !== 0) {
-                      p(50 - headW - 2, 0);
-                      p(50 - neckW, 0);
-                      for (let j = 0; j <= N; j++) {
-                        const a = Math.PI + (j / N) * Math.PI;
-                        p(50 + headW * Math.cos(a), -eT * depth + -eT * depth * 0.6 * Math.sin(a));
-                      }
-                      p(50 + neckW, 0);
-                      p(50 + headW + 2, 0);
-                    }
-                    p(100, 0);
-                    // Right edge: top to bottom
-                    if (eR !== 0) {
-                      p(100, 50 - headW - 2);
-                      p(100, 50 - neckW);
-                      for (let j = 0; j <= N; j++) {
-                        const a = -Math.PI / 2 + (j / N) * Math.PI;
-                        p(100 + eR * depth + eR * depth * 0.6 * Math.cos(a), 50 + headW * Math.sin(a));
-                      }
-                      p(100, 50 + neckW);
-                      p(100, 50 + headW + 2);
-                    }
-                    p(100, 100);
-                    // Bottom edge: right to left
-                    if (eB !== 0) {
-                      p(50 + headW + 2, 100);
-                      p(50 + neckW, 100);
-                      for (let j = 0; j <= N; j++) {
-                        const a = (j / N) * Math.PI;
-                        p(50 + headW * Math.cos(a), 100 + eB * depth + eB * depth * 0.6 * Math.sin(a));
-                      }
-                      p(50 - neckW, 100);
-                      p(50 - headW - 2, 100);
-                    }
-                    p(0, 100);
-                    // Left edge: bottom to top
-                    if (eL !== 0) {
-                      p(0, 50 + headW + 2);
-                      p(0, 50 + neckW);
-                      for (let j = 0; j <= N; j++) {
-                        const a = Math.PI / 2 + (j / N) * Math.PI;
-                        p(-eL * depth + -eL * depth * 0.6 * Math.cos(a), 50 + headW * Math.sin(a));
-                      }
-                      p(0, 50 - neckW);
-                      p(0, 50 - headW - 2);
-                    }
-                    return 'polygon(' + pts.join(', ') + ')';
-                  };
-                  return team.map((mbr, i) => {
-                    const r = Math.floor(i / cols), c = i % cols;
-                    const hasR = c < cols - 1 && i + 1 < len;
-                    const hasB = i + cols < len;
-                    const hasL = c > 0;
-                    const hasT = r > 0;
-                    // Determine edge directions — using (r+c)%2 for alternation
-                    // Right edge of piece [r,c] = -(Left edge of piece [r,c+1])
-                    // Bottom edge of piece [r,c] = -(Top edge of piece [r+1,c])
-                    const eR = !hasR ? 0 : ((r + c) % 2 === 0 ? 1 : -1);
-                    const eB = !hasB ? 0 : ((r + c) % 2 === 0 ? 1 : -1);
-                    // Left = negative of the right edge of the piece to the left
-                    const eL = !hasL ? 0 : -((r + (c - 1)) % 2 === 0 ? 1 : -1);
-                    // Top = negative of the bottom edge of the piece above
-                    const eT = !hasT ? 0 : -(((r - 1) + c) % 2 === 0 ? 1 : -1);
-                    const clip = buildPoly(eT, eR, eB, eL);
-                    return (
-                      <div key={i} className="puzzle-piece" style={{ clipPath: clip }} data-testimonials-item>
-                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} className="puzzle-img" data-testimonials-avatar />
-                        <div className="puzzle-overlay">
-                          <div className="puzzle-name" data-testimonials-title>{mbr.role}</div>
-                        </div>
-                        <p className="puzzle-hidden-desc" data-testimonials-text>{mbr.desc}</p>
+              <div className="team-3d-grid">
+                {team.map((mbr, i) => (
+                  <div key={i} className="team-3d-card" data-testimonials-item data-tilt>
+                    <div className="team-3d-card-inner">
+                      <div className="team-3d-glow"></div>
+                      <div className="team-3d-border"></div>
+                      <div className="team-3d-img-wrap">
+                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} className="team-3d-img" data-testimonials-avatar />
+                        <div className="team-3d-scanline"></div>
                       </div>
-                    );
-                  });
-                })()}
+                      <div className="team-3d-info">
+                        <div className="team-3d-name" data-testimonials-title>{mbr.role}</div>
+                        <div className="team-3d-title">{mbr.desc ? mbr.desc.substring(0, 60) + (mbr.desc.length > 60 ? '...' : '') : ''}</div>
+                      </div>
+                      <div className="team-3d-particles">
+                        {[...Array(20)].map((_, pi) => (
+                          <span key={pi} className="team-3d-particle" style={{
+                            left: Math.random() * 100 + '%',
+                            top: Math.random() * 100 + '%',
+                            animationDelay: (Math.random() * 4) + 's',
+                            animationDuration: (2 + Math.random() * 3) + 's',
+                          }}></span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="puzzle-hidden-desc" data-testimonials-text>{mbr.desc}</p>
+                  </div>
+                ))}
               </div>
             </section>
 
