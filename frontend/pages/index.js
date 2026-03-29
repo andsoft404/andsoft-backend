@@ -620,12 +620,19 @@ export default function Home({ siteData }) {
       bgCanvas.width = bw;
       bgCanvas.height = bh;
 
-      const BG_PARTICLE_COUNT = 60;
-      const BG_CONN_DIST = 120;
+      const BG_PARTICLE_COUNT = 120;
+      const BG_CONN_DIST = 160;
+      const BG_MOUSE_DIST = 250;
+      const bgMouse = { x: -9999, y: -9999 };
+      let bgTime = 0;
 
       function getThemeColor() {
         const theme = document.documentElement.getAttribute('data-theme');
         return theme === 'light' ? '0, 0, 0' : '255, 255, 255';
+      }
+      function getThemeGlow() {
+        const theme = document.documentElement.getAttribute('data-theme');
+        return theme === 'light' ? 'rgba(0,100,200,' : 'rgba(100,180,255,';
       }
 
       class BgParticle {
@@ -633,21 +640,50 @@ export default function Home({ siteData }) {
         init() {
           this.x = Math.random() * bw;
           this.y = Math.random() * bh;
-          this.vx = (Math.random() - 0.5) * 0.3;
-          this.vy = (Math.random() - 0.5) * 0.3;
-          this.r = Math.random() * 1.5 + 0.5;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.baseR = Math.random() * 2 + 0.8;
+          this.r = this.baseR;
+          this.pulseOffset = Math.random() * Math.PI * 2;
+          this.nearMouse = false;
         }
         update() {
+          // mouse attract
+          const dx = bgMouse.x - this.x;
+          const dy = bgMouse.y - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          this.nearMouse = dist < BG_MOUSE_DIST;
+          if (dist < BG_MOUSE_DIST && dist > 10) {
+            const force = (BG_MOUSE_DIST - dist) / BG_MOUSE_DIST * 0.015;
+            this.vx += dx / dist * force;
+            this.vy += dy / dist * force;
+          }
+          this.vx *= 0.998;
+          this.vy *= 0.998;
           this.x += this.vx;
           this.y += this.vy;
-          if (this.x < 0 || this.x > bw) this.vx *= -1;
-          if (this.y < 0 || this.y > bh) this.vy *= -1;
+          // pulse
+          this.r = this.baseR + Math.sin(bgTime * 0.02 + this.pulseOffset) * 0.5;
+          if (this.nearMouse) this.r *= 1.5;
+          if (this.x < 0) { this.x = 0; this.vx *= -1; }
+          if (this.x > bw) { this.x = bw; this.vx *= -1; }
+          if (this.y < 0) { this.y = 0; this.vy *= -1; }
+          if (this.y > bh) { this.y = bh; this.vy *= -1; }
         }
         draw() {
           const c = getThemeColor();
+          const alpha = this.nearMouse ? 0.7 : 0.35;
+          // glow
+          if (this.nearMouse) {
+            const glow = getThemeGlow();
+            bgCtx.beginPath();
+            bgCtx.arc(this.x, this.y, this.r * 3, 0, Math.PI * 2);
+            bgCtx.fillStyle = glow + '0.08)';
+            bgCtx.fill();
+          }
           bgCtx.beginPath();
           bgCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-          bgCtx.fillStyle = 'rgba(' + c + ', 0.3)';
+          bgCtx.fillStyle = 'rgba(' + c + ',' + alpha + ')';
           bgCtx.fill();
         }
       }
@@ -657,7 +693,9 @@ export default function Home({ siteData }) {
 
       function bgAnimate() {
         bgCtx.clearRect(0, 0, bw, bh);
+        bgTime++;
         const c = getThemeColor();
+        const glow = getThemeGlow();
         for (let i = 0; i < bgParticles.length; i++) {
           bgParticles[i].update();
           bgParticles[i].draw();
@@ -666,18 +704,54 @@ export default function Home({ siteData }) {
             const dy = bgParticles[i].y - bgParticles[j].y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < BG_CONN_DIST) {
+              const alpha = (1 - dist / BG_CONN_DIST) * 0.2;
               bgCtx.beginPath();
               bgCtx.moveTo(bgParticles[i].x, bgParticles[i].y);
               bgCtx.lineTo(bgParticles[j].x, bgParticles[j].y);
-              bgCtx.strokeStyle = 'rgba(' + c + ',' + (1 - dist / BG_CONN_DIST) * 0.15 + ')';
-              bgCtx.lineWidth = 0.5;
+              bgCtx.strokeStyle = 'rgba(' + c + ',' + alpha + ')';
+              bgCtx.lineWidth = 0.6;
               bgCtx.stroke();
             }
           }
+          // lines to mouse
+          const mdx = bgParticles[i].x - bgMouse.x;
+          const mdy = bgParticles[i].y - bgMouse.y;
+          const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mdist < BG_MOUSE_DIST) {
+            const mAlpha = (1 - mdist / BG_MOUSE_DIST) * 0.5;
+            bgCtx.beginPath();
+            bgCtx.moveTo(bgParticles[i].x, bgParticles[i].y);
+            bgCtx.lineTo(bgMouse.x, bgMouse.y);
+            bgCtx.strokeStyle = glow + mAlpha + ')';
+            bgCtx.lineWidth = 1;
+            bgCtx.stroke();
+          }
+        }
+        // mouse glow ring
+        if (bgMouse.x > 0 && bgMouse.y > 0) {
+          const pulseR = 4 + Math.sin(bgTime * 0.05) * 2;
+          bgCtx.beginPath();
+          bgCtx.arc(bgMouse.x, bgMouse.y, pulseR, 0, Math.PI * 2);
+          bgCtx.fillStyle = glow + '0.6)';
+          bgCtx.fill();
+          bgCtx.beginPath();
+          bgCtx.arc(bgMouse.x, bgMouse.y, BG_MOUSE_DIST * 0.15, 0, Math.PI * 2);
+          bgCtx.strokeStyle = glow + '0.1)';
+          bgCtx.lineWidth = 1;
+          bgCtx.stroke();
         }
         bgAnimId = requestAnimationFrame(bgAnimate);
       }
       bgAnimate();
+
+      bgCanvas.addEventListener('mousemove', function(e) {
+        bgMouse.x = e.clientX;
+        bgMouse.y = e.clientY;
+      });
+      bgCanvas.addEventListener('mouseleave', function() {
+        bgMouse.x = -9999;
+        bgMouse.y = -9999;
+      });
 
       function bgResize() {
         bw = window.innerWidth;
