@@ -621,7 +621,7 @@ export default function Home({ siteData }) {
       bgCanvas.width = bw;
       bgCanvas.height = bh;
 
-      const BG_PARTICLE_COUNT = 120;
+      const BG_PARTICLE_COUNT = window.innerWidth < 768 ? 30 : 120;
       const BG_CONN_DIST = 160;
       const BG_MOUSE_DIST = 250;
       const bgMouse = { x: -9999, y: -9999 };
@@ -778,7 +778,7 @@ export default function Home({ siteData }) {
         }
       }, 3000);
 
-      // Drag to scroll
+      // Drag to scroll (mouse only - touch uses native scroll)
       let isDragging = false;
       let dragMoved = false;
       let startX = 0;
@@ -804,21 +804,6 @@ export default function Home({ siteData }) {
         isDragging = false;
         holoGrid.classList.remove('is-dragging');
       };
-      const onTouchStart = (e) => {
-        isDragging = true;
-        dragMoved = false;
-        startX = e.touches[0].pageX - holoGrid.offsetLeft;
-        scrollStart = holoGrid.scrollLeft;
-      };
-      const onTouchMove = (e) => {
-        if (!isDragging) return;
-        const x = e.touches[0].pageX - holoGrid.offsetLeft;
-        const dist = Math.abs(x - startX);
-        if (dist > 5) dragMoved = true;
-        const walk = (x - startX) * 1.5;
-        holoGrid.scrollLeft = scrollStart - walk;
-      };
-      const onTouchEnd = () => { isDragging = false; };
 
       // Prevent click events after drag
       holoGrid.addEventListener('click', (e) => {
@@ -833,9 +818,6 @@ export default function Home({ siteData }) {
       holoGrid.addEventListener('mousemove', onMouseMove);
       holoGrid.addEventListener('mouseup', onMouseUp);
       holoGrid.addEventListener('mouseleave', onMouseUp);
-      holoGrid.addEventListener('touchstart', onTouchStart, { passive: true });
-      holoGrid.addEventListener('touchmove', onTouchMove, { passive: true });
-      holoGrid.addEventListener('touchend', onTouchEnd);
     }
 
     return () => {
