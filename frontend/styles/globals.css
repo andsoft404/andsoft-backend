@@ -246,6 +246,8 @@
   display: block;
   padding: 12px 15px;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .site-footer .contacts-list,
@@ -311,6 +313,17 @@
 
 
 
+/* Background particle canvas */
+.bg-particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -347,7 +360,7 @@ input, textarea {
 
 html { font-family: var(--ff-poppins); }
 
-body { background: var(--smoky-black); }
+body { background: var(--smoky-black); position: relative; z-index: 0; }
 
 
 
@@ -1176,8 +1189,12 @@ main {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: auto;
+  pointer-events: none;
   overflow: hidden;
+}
+
+.hero-float-logo {
+  pointer-events: auto;
 }
 
 .hero-float-logo {
@@ -2871,6 +2888,8 @@ textarea.form-input::-webkit-resizer { display: none; }
     max-width: 1200px;
     margin-inline: auto;
     display: block;
+    position: relative;
+    z-index: 1;
   }
 
   .main-content {

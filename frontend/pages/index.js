@@ -26,6 +26,7 @@ export default function Home({ siteData }) {
   const advantages = siteData.advantages || [];
   const projects = siteData.projects || [];
   const canvasRef = useRef(null);
+  const bgCanvasRef = useRef(null);
   useEffect(() => {
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -597,8 +598,8 @@ export default function Home({ siteData }) {
         mouse.y = e.clientY - rect.top;
       }
       function onMouseLeave() { mouse.x = -9999; mouse.y = -9999; }
-      canvas.addEventListener('mousemove', onMouseMove);
-      canvas.addEventListener('mouseleave', onMouseLeave);
+      parent.addEventListener('mousemove', onMouseMove);
+      parent.addEventListener('mouseleave', onMouseLeave);
 
       function onResize() {
         w = parent.offsetWidth;
@@ -609,9 +610,88 @@ export default function Home({ siteData }) {
       window.addEventListener('resize', onResize);
     }
 
+    // Background particle network
+    const bgCanvas = bgCanvasRef.current;
+    let bgAnimId = null;
+    if (bgCanvas) {
+      const bgCtx = bgCanvas.getContext('2d');
+      let bw = window.innerWidth;
+      let bh = window.innerHeight;
+      bgCanvas.width = bw;
+      bgCanvas.height = bh;
+
+      const BG_PARTICLE_COUNT = 60;
+      const BG_CONN_DIST = 120;
+
+      function getThemeColor() {
+        const theme = document.documentElement.getAttribute('data-theme');
+        return theme === 'light' ? '0, 0, 0' : '255, 255, 255';
+      }
+
+      class BgParticle {
+        constructor() { this.init(); }
+        init() {
+          this.x = Math.random() * bw;
+          this.y = Math.random() * bh;
+          this.vx = (Math.random() - 0.5) * 0.3;
+          this.vy = (Math.random() - 0.5) * 0.3;
+          this.r = Math.random() * 1.5 + 0.5;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > bw) this.vx *= -1;
+          if (this.y < 0 || this.y > bh) this.vy *= -1;
+        }
+        draw() {
+          const c = getThemeColor();
+          bgCtx.beginPath();
+          bgCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          bgCtx.fillStyle = 'rgba(' + c + ', 0.3)';
+          bgCtx.fill();
+        }
+      }
+
+      const bgParticles = [];
+      for (let i = 0; i < BG_PARTICLE_COUNT; i++) bgParticles.push(new BgParticle());
+
+      function bgAnimate() {
+        bgCtx.clearRect(0, 0, bw, bh);
+        const c = getThemeColor();
+        for (let i = 0; i < bgParticles.length; i++) {
+          bgParticles[i].update();
+          bgParticles[i].draw();
+          for (let j = i + 1; j < bgParticles.length; j++) {
+            const dx = bgParticles[i].x - bgParticles[j].x;
+            const dy = bgParticles[i].y - bgParticles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < BG_CONN_DIST) {
+              bgCtx.beginPath();
+              bgCtx.moveTo(bgParticles[i].x, bgParticles[i].y);
+              bgCtx.lineTo(bgParticles[j].x, bgParticles[j].y);
+              bgCtx.strokeStyle = 'rgba(' + c + ',' + (1 - dist / BG_CONN_DIST) * 0.15 + ')';
+              bgCtx.lineWidth = 0.5;
+              bgCtx.stroke();
+            }
+          }
+        }
+        bgAnimId = requestAnimationFrame(bgAnimate);
+      }
+      bgAnimate();
+
+      function bgResize() {
+        bw = window.innerWidth;
+        bh = window.innerHeight;
+        bgCanvas.width = bw;
+        bgCanvas.height = bh;
+      }
+      window.addEventListener('resize', bgResize);
+    }
+
     return () => {
       autoScrollIntervals.forEach(id => clearInterval(id));
       if (bannerAnimId) cancelAnimationFrame(bannerAnimId);
+      if (bgAnimId) cancelAnimationFrame(bgAnimId);
     };
   }, []);
 
@@ -622,6 +702,7 @@ export default function Home({ siteData }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
+      <canvas ref={bgCanvasRef} className="bg-particle-canvas"></canvas>
       <main>
         {/* SIDEBAR (mobile/tablet) */}
         <aside className="sidebar" data-sidebar>
