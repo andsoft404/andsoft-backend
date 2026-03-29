@@ -780,11 +780,13 @@ export default function Home({ siteData }) {
 
       // Drag to scroll
       let isDragging = false;
+      let dragMoved = false;
       let startX = 0;
       let scrollStart = 0;
 
       const onMouseDown = (e) => {
         isDragging = true;
+        dragMoved = false;
         startX = e.pageX - holoGrid.offsetLeft;
         scrollStart = holoGrid.scrollLeft;
         holoGrid.classList.add('is-dragging');
@@ -793,6 +795,8 @@ export default function Home({ siteData }) {
         if (!isDragging) return;
         e.preventDefault();
         const x = e.pageX - holoGrid.offsetLeft;
+        const dist = Math.abs(x - startX);
+        if (dist > 5) dragMoved = true;
         const walk = (x - startX) * 1.5;
         holoGrid.scrollLeft = scrollStart - walk;
       };
@@ -802,16 +806,28 @@ export default function Home({ siteData }) {
       };
       const onTouchStart = (e) => {
         isDragging = true;
+        dragMoved = false;
         startX = e.touches[0].pageX - holoGrid.offsetLeft;
         scrollStart = holoGrid.scrollLeft;
       };
       const onTouchMove = (e) => {
         if (!isDragging) return;
         const x = e.touches[0].pageX - holoGrid.offsetLeft;
+        const dist = Math.abs(x - startX);
+        if (dist > 5) dragMoved = true;
         const walk = (x - startX) * 1.5;
         holoGrid.scrollLeft = scrollStart - walk;
       };
       const onTouchEnd = () => { isDragging = false; };
+
+      // Prevent click events after drag
+      holoGrid.addEventListener('click', (e) => {
+        if (dragMoved) {
+          e.stopPropagation();
+          e.preventDefault();
+          dragMoved = false;
+        }
+      }, true);
 
       holoGrid.addEventListener('mousedown', onMouseDown);
       holoGrid.addEventListener('mousemove', onMouseMove);
@@ -981,7 +997,7 @@ export default function Home({ siteData }) {
               <h3 className="h3 testimonials-title">Хамт олон</h3>
               <div className="holo-grid" ref={holoGridRef}>
                 {team.map((mbr, i) => (
-                  <div key={i} className="holo-card" data-testimonials-item>
+                  <div key={i} className="holo-card">
                     {/* Info label - left side */}
                     <div className="holo-label">
                       <div className="holo-label-name">{mbr.role}</div>
