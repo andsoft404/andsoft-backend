@@ -610,36 +610,6 @@ export default function Home({ siteData }) {
       window.addEventListener('resize', onResize);
     }
 
-    // 3D tilt cards
-    const tiltCards = document.querySelectorAll('[data-tilt]');
-    tiltCards.forEach(function(card) {
-      const inner = card.querySelector('.team-3d-card-inner');
-      const glowEl = card.querySelector('.team-3d-glow');
-      if (!inner) return;
-
-      card.addEventListener('mousemove', function(e) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / centerY * -15;
-        const rotateY = (x - centerX) / centerX * 15;
-
-        inner.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.05, 1.05, 1.05)';
-
-        if (glowEl) {
-          glowEl.style.opacity = '1';
-          glowEl.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(0,150,255,0.4) 0%, transparent 60%)';
-        }
-      });
-
-      card.addEventListener('mouseleave', function() {
-        inner.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-        if (glowEl) { glowEl.style.opacity = '0'; }
-      });
-    });
-
     // Background particle network
     const bgCanvas = bgCanvasRef.current;
     let bgAnimId = null;
@@ -945,35 +915,51 @@ export default function Home({ siteData }) {
               </div>
             </section>
 
-            {/* Хамт олон — 3D Holographic Cards */}
+            {/* Хамт олон — Holographic Pedestal */}
             <section className="testimonials">
               <h3 className="h3 testimonials-title">Хамт олон</h3>
-              <div className="team-3d-grid">
+              <div className="holo-grid">
                 {team.map((mbr, i) => (
-                  <div key={i} className="team-3d-card" data-testimonials-item data-tilt>
-                    <div className="team-3d-card-inner">
-                      <div className="team-3d-glow"></div>
-                      <div className="team-3d-border"></div>
-                      <div className="team-3d-img-wrap">
-                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} className="team-3d-img" data-testimonials-avatar />
-                        <div className="team-3d-scanline"></div>
+                  <div key={i} className="holo-card" data-testimonials-item>
+                    {/* Info label - left side */}
+                    <div className="holo-label">
+                      <div className="holo-label-name">{mbr.role}</div>
+                      <div className="holo-label-title"><ion-icon name="location-outline" style={{fontSize:'11px'}}></ion-icon> {mbr.desc ? mbr.desc.substring(0, 40) + (mbr.desc.length > 40 ? '...' : '') : ''}</div>
+                      <div className="holo-label-line"></div>
+                      <div className="holo-label-dot"></div>
+                    </div>
+                    {/* Desc label - bottom left */}
+                    <div className="holo-desc-label">
+                      <p>{mbr.desc ? mbr.desc.substring(0, 100) + (mbr.desc.length > 100 ? '...' : '') : ''}</p>
+                    </div>
+                    {/* Character */}
+                    <div className="holo-character">
+                      {/* Avatar head */}
+                      <div className="holo-avatar">
+                        <img src={mbr.image || '/images/avatar-1.png'} alt={mbr.role} data-testimonials-avatar />
                       </div>
-                      <div className="team-3d-info">
-                        <div className="team-3d-name" data-testimonials-title>{mbr.role}</div>
-                        <div className="team-3d-title">{mbr.desc ? mbr.desc.substring(0, 60) + (mbr.desc.length > 60 ? '...' : '') : ''}</div>
+                      {/* Holographic body */}
+                      <div className="holo-body">
+                        <div className="holo-body-inner"></div>
+                        <div className="holo-body-scanline"></div>
+                        {/* Corner brackets */}
+                        <div className="holo-bracket holo-bracket-tl"></div>
+                        <div className="holo-bracket holo-bracket-tr"></div>
+                        <div className="holo-bracket holo-bracket-bl"></div>
+                        <div className="holo-bracket holo-bracket-br"></div>
                       </div>
-                      <div className="team-3d-particles">
-                        {[...Array(20)].map((_, pi) => (
-                          <span key={pi} className="team-3d-particle" style={{
-                            left: Math.random() * 100 + '%',
-                            top: Math.random() * 100 + '%',
-                            animationDelay: (Math.random() * 4) + 's',
-                            animationDuration: (2 + Math.random() * 3) + 's',
-                          }}></span>
-                        ))}
+                      {/* Platform */}
+                      <div className="holo-platform">
+                        <div className="holo-platform-ring"></div>
+                        <div className="holo-platform-ring holo-platform-ring-2"></div>
+                        <div className="holo-platform-glow"></div>
+                        <div className="holo-platform-light"></div>
                       </div>
+                      {/* Number badge */}
+                      <div className="holo-number">{String(i + 1).padStart(3, '0')}</div>
                     </div>
                     <p className="puzzle-hidden-desc" data-testimonials-text>{mbr.desc}</p>
+                    <div className="holo-hidden-title" data-testimonials-title style={{display:'none'}}>{mbr.role}</div>
                   </div>
                 ))}
               </div>

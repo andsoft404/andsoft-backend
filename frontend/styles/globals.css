@@ -941,242 +941,404 @@ main {
 
 
 /**
- * #3D TEAM CARDS
+ * #HOLOGRAPHIC PEDESTAL TEAM
  */
 
 .puzzle-hidden-desc {
   display: none;
 }
 
-.team-3d-grid {
+.holo-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 800px;
+  gap: 40px 20px;
+  max-width: 850px;
   margin: 0 auto;
-  padding: 10px;
-  perspective: 1200px;
+  padding: 20px 10px;
 }
 
-.team-3d-card {
+.holo-card {
   position: relative;
   cursor: pointer;
-  perspective: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
 }
 
-.team-3d-card-inner {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  background: linear-gradient(145deg, rgba(15, 25, 50, 0.9), rgba(5, 10, 30, 0.95));
-  border: 1px solid rgba(0, 150, 255, 0.15);
-  transform-style: preserve-3d;
-  transition: transform 0.4s cubic-bezier(0.03, 0.98, 0.52, 0.99),
-              box-shadow 0.4s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
-              0 0 0 1px rgba(0, 150, 255, 0.05),
-              inset 0 0 30px rgba(0, 150, 255, 0.03);
-  will-change: transform;
-}
-
-.team-3d-card:hover .team-3d-card-inner {
-  box-shadow: 0 15px 50px rgba(0, 100, 255, 0.25),
-              0 0 30px rgba(0, 150, 255, 0.15),
-              0 0 0 1px rgba(0, 150, 255, 0.3),
-              inset 0 0 40px rgba(0, 150, 255, 0.05);
-}
-
-.team-3d-glow {
+/* ─── Info label (left side) ─── */
+.holo-label {
   position: absolute;
-  inset: 0;
-  z-index: 3;
+  left: -5px;
+  top: 25%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.holo-label-name {
+  background: rgba(0, 130, 255, 0.15);
+  border: 1px solid rgba(0, 180, 255, 0.35);
+  border-radius: 6px;
+  padding: 5px 14px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+.holo-label-title {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(0, 130, 255, 0.1);
+  border: 1px solid rgba(0, 180, 255, 0.25);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  padding: 3px 14px;
+  color: rgba(180, 220, 255, 0.8);
+  font-size: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.holo-label-line {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 180, 255, 0.6), rgba(0, 180, 255, 0.1));
+}
+
+.holo-label-dot {
+  position: absolute;
+  right: -44px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 180, 255, 0.9);
+  box-shadow: 0 0 8px rgba(0, 180, 255, 0.6);
+}
+
+/* ─── Desc label (bottom left) ─── */
+.holo-desc-label {
+  position: absolute;
+  left: -5px;
+  bottom: 22%;
+  z-index: 5;
+  max-width: 150px;
+  background: rgba(0, 130, 255, 0.1);
+  border: 1px solid rgba(0, 180, 255, 0.25);
+  border-radius: 6px;
+  padding: 8px 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateX(-10px);
+  transition: opacity 0.4s, transform 0.4s;
   pointer-events: none;
-  border-radius: 16px;
 }
 
-.team-3d-border {
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  z-index: 2;
-  pointer-events: none;
-  background: none;
-  overflow: hidden;
+.holo-card:hover .holo-desc-label {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-.team-3d-border::before {
-  content: '';
-  position: absolute;
-  inset: -150%;
-  background: conic-gradient(from 0deg, transparent 0%, rgba(0, 150, 255, 0.5) 10%, transparent 20%, transparent 50%, rgba(0, 150, 255, 0.3) 60%, transparent 70%);
-  animation: team3dBorderSpin 4s linear infinite;
+.holo-desc-label p {
+  color: rgba(200, 230, 255, 0.85);
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0;
 }
 
-.team-3d-border::after {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  border-radius: 15px;
-  background: linear-gradient(145deg, rgba(15, 25, 50, 0.98), rgba(5, 10, 30, 0.98));
-}
-
-@keyframes team3dBorderSpin {
-  to { transform: rotate(360deg); }
-}
-
-.team-3d-img-wrap {
+/* ─── Character container ─── */
+.holo-character {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
-  z-index: 1;
+  max-width: 220px;
 }
 
-.team-3d-img {
+/* ─── Avatar head ─── */
+.holo-avatar {
+  position: relative;
+  z-index: 3;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(0, 180, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.3),
+              0 0 40px rgba(0, 100, 255, 0.1);
+  transition: transform 0.4s, box-shadow 0.4s;
+  margin-bottom: -10px;
+}
+
+.holo-card:hover .holo-avatar {
+  transform: scale(1.08);
+  box-shadow: 0 0 30px rgba(0, 180, 255, 0.5),
+              0 0 60px rgba(0, 100, 255, 0.2);
+  border-color: rgba(0, 200, 255, 0.6);
+}
+
+.holo-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease, filter 0.5s ease;
-  filter: saturate(0.8) brightness(0.9);
 }
 
-.team-3d-card:hover .team-3d-img {
-  transform: scale(1.08);
-  filter: saturate(1.1) brightness(1);
-}
-
-.team-3d-scanline {
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  background: linear-gradient(180deg, transparent, rgba(0, 180, 255, 0.3), transparent);
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.team-3d-card:hover .team-3d-scanline {
-  opacity: 1;
-  animation: team3dScanline 2s linear infinite;
-}
-
-@keyframes team3dScanline {
-  0% { top: -10%; }
-  100% { top: 110%; }
-}
-
-.team-3d-info {
+/* ─── Holographic body ─── */
+.holo-body {
   position: relative;
-  z-index: 1;
-  padding: 14px 16px;
-  background: linear-gradient(180deg, rgba(0, 20, 50, 0.6), rgba(0, 10, 35, 0.9));
-  border-top: 1px solid rgba(0, 150, 255, 0.1);
+  z-index: 2;
+  width: 110px;
+  height: 140px;
+  overflow: visible;
 }
 
-.team-3d-name {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-  text-shadow: 0 0 10px rgba(0, 150, 255, 0.5);
-}
-
-.team-3d-card:hover .team-3d-name {
-  text-shadow: 0 0 20px rgba(0, 180, 255, 0.8), 0 0 40px rgba(0, 150, 255, 0.3);
-}
-
-.team-3d-title {
-  color: rgba(150, 200, 255, 0.6);
-  font-size: 11px;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.team-3d-particles {
+.holo-body-inner {
   position: absolute;
   inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  overflow: hidden;
-  border-radius: 16px;
-  opacity: 0;
-  transition: opacity 0.5s ease;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 180, 255, 0.06) 0%,
+    rgba(0, 150, 255, 0.12) 30%,
+    rgba(0, 120, 255, 0.08) 60%,
+    rgba(0, 180, 255, 0.15) 100%
+  );
+  border: 1px solid rgba(0, 180, 255, 0.2);
+  border-radius: 4px 4px 8px 8px;
+  /* wireframe grid effect */
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 9px, rgba(0, 180, 255, 0.08) 9px, rgba(0, 180, 255, 0.08) 10px),
+    repeating-linear-gradient(90deg, transparent, transparent 9px, rgba(0, 180, 255, 0.08) 9px, rgba(0, 180, 255, 0.08) 10px);
+  box-shadow: 0 0 15px rgba(0, 150, 255, 0.15),
+              inset 0 0 20px rgba(0, 150, 255, 0.05);
+  animation: holoBodyPulse 3s ease-in-out infinite;
 }
 
-.team-3d-card:hover .team-3d-particles {
+@keyframes holoBodyPulse {
+  0%, 100% { opacity: 0.7; border-color: rgba(0, 180, 255, 0.2); }
+  50% { opacity: 1; border-color: rgba(0, 200, 255, 0.4); }
+}
+
+.holo-body-scanline {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 200, 255, 0.6) 50%, transparent 100%);
+  z-index: 3;
+  opacity: 0;
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.4);
+}
+
+.holo-card:hover .holo-body-scanline {
+  opacity: 1;
+  animation: holoScanline 2s linear infinite;
+}
+
+@keyframes holoScanline {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* ─── Corner brackets ─── */
+.holo-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(0, 200, 255, 0.5);
+  border-style: solid;
+  z-index: 4;
+  transition: border-color 0.3s;
+}
+
+.holo-card:hover .holo-bracket {
+  border-color: rgba(0, 220, 255, 0.8);
+  box-shadow: 0 0 6px rgba(0, 200, 255, 0.3);
+}
+
+.holo-bracket-tl { top: -4px; left: -4px; border-width: 2px 0 0 2px; }
+.holo-bracket-tr { top: -4px; right: -4px; border-width: 2px 2px 0 0; }
+.holo-bracket-bl { bottom: -4px; left: -4px; border-width: 0 0 2px 2px; }
+.holo-bracket-br { bottom: -4px; right: -4px; border-width: 0 2px 2px 0; }
+
+/* ─── Platform / Pedestal ─── */
+.holo-platform {
+  position: relative;
+  z-index: 1;
+  width: 140px;
+  height: 35px;
+  margin-top: -2px;
+}
+
+.holo-platform-ring {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 30px;
+  border: 1.5px solid rgba(0, 200, 255, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.2),
+              inset 0 0 10px rgba(0, 200, 255, 0.1);
+  animation: holoPlatformSpin 6s linear infinite;
+}
+
+.holo-platform-ring-2 {
+  width: 100px;
+  height: 24px;
+  bottom: 11px;
+  border-color: rgba(0, 180, 255, 0.25);
+  animation-direction: reverse;
+  animation-duration: 8s;
+}
+
+@keyframes holoPlatformSpin {
+  0% { box-shadow: 0 0 10px rgba(0, 200, 255, 0.2), inset 0 0 10px rgba(0, 200, 255, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(0, 200, 255, 0.4), inset 0 0 15px rgba(0, 200, 255, 0.2); }
+  100% { box-shadow: 0 0 10px rgba(0, 200, 255, 0.2), inset 0 0 10px rgba(0, 200, 255, 0.1); }
+}
+
+.holo-platform-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 180, 255, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.holo-platform-light {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 120px;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 180, 255, 0.12) 0%,
+    rgba(0, 180, 255, 0.02) 60%,
+    transparent 100%
+  );
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.holo-card:hover .holo-platform-light {
   opacity: 1;
 }
 
-.team-3d-particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: rgba(0, 180, 255, 0.8);
-  border-radius: 50%;
-  animation: team3dFloat 3s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(0, 150, 255, 0.6);
+/* ─── Number badge ─── */
+.holo-number {
+  position: relative;
+  z-index: 3;
+  margin-top: 4px;
+  background: linear-gradient(180deg, rgba(20, 40, 80, 0.9), rgba(10, 20, 50, 0.95));
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  border-radius: 6px;
+  padding: 3px 16px;
+  color: rgba(0, 200, 255, 0.9);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 150, 255, 0.15);
 }
 
-@keyframes team3dFloat {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
-  25% { opacity: 1; }
-  50% { transform: translateY(-30px) scale(1.5); opacity: 0.8; }
-  75% { opacity: 0.4; }
+/* ─── Hover animations ─── */
+.holo-card:hover .holo-character {
+  animation: holoFloat 2s ease-in-out infinite;
 }
 
-/* Light theme overrides */
-[data-theme="light"] .team-3d-card-inner {
-  background: linear-gradient(145deg, rgba(230, 240, 255, 0.95), rgba(220, 235, 250, 0.98));
-  border-color: rgba(0, 100, 200, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
-              0 0 0 1px rgba(0, 100, 200, 0.08);
+@keyframes holoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
-[data-theme="light"] .team-3d-card:hover .team-3d-card-inner {
-  box-shadow: 0 15px 50px rgba(0, 100, 200, 0.2),
-              0 0 30px rgba(0, 100, 200, 0.1),
-              0 0 0 1px rgba(0, 100, 200, 0.3);
+.holo-card:hover .holo-number {
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+  text-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
 }
 
-[data-theme="light"] .team-3d-border::after {
-  background: linear-gradient(145deg, rgba(230, 240, 255, 0.98), rgba(220, 235, 250, 0.98));
-}
-
-[data-theme="light"] .team-3d-info {
-  background: linear-gradient(180deg, rgba(220, 235, 255, 0.8), rgba(210, 230, 250, 0.95));
-  border-top-color: rgba(0, 100, 200, 0.15);
-}
-
-[data-theme="light"] .team-3d-name {
+/* ─── Light theme ─── */
+[data-theme="light"] .holo-label-name {
+  background: rgba(0, 80, 180, 0.12);
+  border-color: rgba(0, 100, 200, 0.35);
   color: hsl(210, 50%, 20%);
+}
+
+[data-theme="light"] .holo-label-title {
+  background: rgba(0, 80, 180, 0.08);
+  border-color: rgba(0, 100, 200, 0.2);
+  color: rgba(0, 60, 120, 0.7);
+}
+
+[data-theme="light"] .holo-label-line {
+  background: linear-gradient(90deg, rgba(0, 100, 200, 0.5), rgba(0, 100, 200, 0.1));
+}
+
+[data-theme="light"] .holo-label-dot {
+  background: rgba(0, 100, 200, 0.8);
+  box-shadow: 0 0 8px rgba(0, 100, 200, 0.4);
+}
+
+[data-theme="light"] .holo-desc-label {
+  background: rgba(0, 80, 180, 0.08);
+  border-color: rgba(0, 100, 200, 0.2);
+}
+
+[data-theme="light"] .holo-desc-label p {
+  color: rgba(0, 50, 120, 0.8);
+}
+
+[data-theme="light"] .holo-avatar {
+  border-color: rgba(0, 100, 200, 0.3);
+  box-shadow: 0 0 20px rgba(0, 100, 200, 0.15);
+}
+
+[data-theme="light"] .holo-body-inner {
+  background: linear-gradient(180deg, rgba(0, 100, 200, 0.04), rgba(0, 80, 180, 0.08), rgba(0, 100, 200, 0.06));
+  border-color: rgba(0, 100, 200, 0.15);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 9px, rgba(0, 100, 200, 0.06) 9px, rgba(0, 100, 200, 0.06) 10px),
+    repeating-linear-gradient(90deg, transparent, transparent 9px, rgba(0, 100, 200, 0.06) 9px, rgba(0, 100, 200, 0.06) 10px);
+}
+
+[data-theme="light"] .holo-bracket {
+  border-color: rgba(0, 100, 200, 0.4);
+}
+
+[data-theme="light"] .holo-platform-ring {
+  border-color: rgba(0, 100, 200, 0.3);
+}
+
+[data-theme="light"] .holo-number {
+  background: linear-gradient(180deg, rgba(220, 235, 255, 0.95), rgba(200, 225, 250, 0.98));
+  border-color: rgba(0, 100, 200, 0.3);
+  color: rgba(0, 80, 180, 0.9);
   text-shadow: none;
-}
-
-[data-theme="light"] .team-3d-card:hover .team-3d-name {
-  text-shadow: 0 0 10px rgba(0, 100, 200, 0.3);
-}
-
-[data-theme="light"] .team-3d-title {
-  color: rgba(0, 60, 120, 0.6);
-}
-
-[data-theme="light"] .team-3d-particle {
-  background: rgba(0, 100, 200, 0.6);
-  box-shadow: 0 0 6px rgba(0, 100, 200, 0.4);
-}
-
-[data-theme="light"] .team-3d-scanline {
-  background: linear-gradient(180deg, transparent, rgba(0, 100, 200, 0.2), transparent);
 }
 
 
@@ -2408,16 +2570,21 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .service-content-box { text-align: left; }
 
-  /* 3D team cards */
+  /* holographic team */
 
-  .team-3d-grid {
+  .holo-grid {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 750px;
-    gap: 28px;
+    max-width: 850px;
+    gap: 40px 24px;
   }
 
-  .team-3d-name {
+  .holo-label-name {
     font-size: 14px;
+  }
+
+  .holo-avatar {
+    width: 100px;
+    height: 100px;
   }
 
   /* testimonials */
@@ -2598,13 +2765,23 @@ textarea.form-input::-webkit-resizer { display: none; }
    * ABOUT
    */
 
-  .team-3d-grid {
+  .holo-grid {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 800px;
-    gap: 30px;
+    max-width: 900px;
+    gap: 40px 28px;
   }
 
-  .team-3d-name {
+  .holo-avatar {
+    width: 110px;
+    height: 110px;
+  }
+
+  .holo-body {
+    width: 120px;
+    height: 155px;
+  }
+
+  .holo-label-name {
     font-size: 15px;
   }
 
@@ -2810,12 +2987,12 @@ textarea.form-input::-webkit-resizer { display: none; }
     gap: 20px 25px;
   }
 
-  /* 3D team cards */
+  /* holographic team */
 
-  .team-3d-grid {
+  .holo-grid {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 900px;
-    gap: 32px;
+    max-width: 1000px;
+    gap: 40px 32px;
   }
 
   /* testimonials */
